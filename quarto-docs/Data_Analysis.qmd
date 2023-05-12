@@ -1,0 +1,156 @@
+---
+title: "Data Analysis"
+format: docx
+author: Michael Schramm
+date: today
+reference-doc: format.docx
+bibliography: bibliography.yaml
+csl: https://www.zotero.org/styles/council-of-science-editors-author-date?source=1
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tidyverse.quiet = TRUE)
+library(targets)
+library(tidyverse)
+library(anesrake)
+library(flextable)
+library(gtsummary)
+
+## if running in interactive, the store needs to be set to root directory
+if(interactive()) {
+  store = paste0("../", tar_path_store())
+} else {
+  store = tar_path_store()
+}
+
+```
+
+
+
+# Methods
+
+## Survey
+
+To do
+
+```{r}
+unweighted_demo <- tar_read(pfas_analysis_data, store = store)
+unweighted_demo |> 
+  select(`Sex/Gender` = SEX,
+         `Age` = AGEP,
+         `Race/Ethnicity` = RACE5,
+         `Educational` = SCHL) |> 
+  mutate(Age = forcats::fct_na_value_to_level(Age, level = "No answer"),
+         `Race/Ethnicity` = forcats::fct_na_value_to_level(`Race/Ethnicity`, level = "No answer"),
+         Educational = forcats::fct_na_value_to_level(Educational, level = "No answer")) |> 
+  tbl_summary(include = c(`Sex/Gender`, `Age`, `Race/Ethnicity`, `Educational`)) |>
+  as_flex_table() |>
+  style(pr_t = fp_text_default(font.size = 9), part = "body") |>
+  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
+  set_table_properties(layout = "autofit") |>
+  hline(i = 5, j = c(1:2), part = "body") |>
+  hline(i = 13, j = c(1:2), part = "body") |>
+  hline(i = 23, j = c(1:2), part = "body")
+```
+
+
+
+## Data Analysis
+
+Prior to analysis, individual survey responses were weighted so that 
+marginal proportions of the survey matched national 
+level benchmarks from the 5-year 2021 American Community Survey (ACS) on 
+sex/gender, age group, race/ethnicity, and education level. Weights were 
+developed by poststratification raking using the American National Election 
+Study (ANES) weighting algorithm implemented in the *anesrake* R package 
+[@debellComputingWeightsAmerican2009; @pasekAnesrakeANESRaking2018]. Weights on 
+gender were developed by re-coding "female" and "other" responses as "non-male" 
+because the ACS only provides binary response options for sex. Using this approach,
+responses from both "female" and "other" respondents have the same marginal weight.
+@kennedyUsingSexGender2022 provide substantial discussion on the treatment of 
+sex and gender in survey adjustment.
+@kennedyUsingSexGender2022 provide substantial discussion on the treatment of 
+sex and gender in survey adjustment.
+
+
+
+```{r}
+unweighted_demo <- tar_read(pfas_analysis_data, store = store)
+unweighted_demo <- unweighted_demo |> 
+  select(`Sex/Gender` = SEX_NM,
+         `Age` = AGEP,
+         `Race/Ethnicity` = RACE5,
+         `Educational` = SCHL) |> 
+  mutate(`Sex/Gender` = forcats::fct_na_value_to_level(`Sex/Gender`, level = "No answer"),
+         Age = forcats::fct_na_value_to_level(Age, level = "No answer"),
+         `Race/Ethnicity` = forcats::fct_na_value_to_level(`Race/Ethnicity`, level = "No answer"),
+         Educational = forcats::fct_na_value_to_level(Educational, level = "No answer")) |> 
+  tbl_summary(include = c(`Sex/Gender`, `Age`, `Race/Ethnicity`, `Educational`),
+              statistic = list(all_categorical() ~"{n}")) |>
+  as_tibble() |>
+  rename(`Unweighted N` = "**N = 1,100**",
+         Value = "**Characteristic**") |> 
+  filter(!is.na(`Unweighted N`)) |> 
+  mutate(`Variable` = c(rep("Sex/Gender",3),
+                        rep("Age", 7),
+                        rep("Race/Ethnicity", 9),
+                        rep("Education", 8)),
+         `Unweighted N` = as.integer(`Unweighted N`)) |> 
+  group_by(Variable) |> 
+  mutate(`Unweighted %` = round(`Unweighted N` / sum(`Unweighted N`) * 100, 1)) |> 
+  select(Variable, Value, `Unweighted N`, `Unweighted %`)
+
+
+weighted_demo <- tar_read(raked_weights, store = store) |>  
+  summary()
+
+
+
+df <- tibble(
+  demographic_indicators = list(`Sex` = as_tibble(weighted_demo$rk_SEX_NM,
+                                                  rownames = "value") |> 
+                                  mutate(`Variable` = "Sex/Gender"),
+                                `Race/Ethnicity` = as_tibble(weighted_demo$rk_RACE5,
+                                                             rownames = "value") |> 
+                                  mutate(`Variable` = "Race/Ethnicity"),
+                                `Age` = as_tibble(weighted_demo$rk_AGEP,
+                                                  rownames = "value") |> 
+                                  mutate(`Variable` = "Age"),
+                                `Education` = as_tibble(weighted_demo$rk_SCHL,
+                                                        rownames = "value") |> 
+                                  mutate(`Variable` = "Education"))
+)
+weighted_demo <- df |> 
+  unnest(cols = c(demographic_indicators)) |> 
+  select(`Variable`, value, Target, `Wtd N`, `Wtd %`) |> 
+  filter(value != "Total") |> 
+  rename(Value = value) |> 
+  mutate(Target = round(Target * 100, 1),
+         `Wtd N` = round(`Wtd N`, 1),
+         `Wtd %` = round(`Wtd %` * 100, 1)) |> 
+  rename(`Target %` = Target,
+         `Weighted N` = `Wtd N`,
+         `Weighted %` = `Wtd %`)
+
+
+
+unweighted_demo |> 
+  left_join(weighted_demo, by = c("Variable" = "Variable", 
+                                  "Value" = "Value")) |> 
+  flextable() |> 
+  merge_v(j = c("Variable")) |> 
+  colformat_double(digits = 1) |> 
+  set_table_properties(layout = "autofit") |> 
+  hline(i = 3, j = c(2:7), part = "body") |> 
+  hline(i = 10, j = c(2:7), part = "body") |> 
+  hline(i = 19, j = c(2:7), part = "body") |> 
+  style(pr_t = fp_text_default(font.size = 9), part = "body") |> 
+  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header")
+```
+

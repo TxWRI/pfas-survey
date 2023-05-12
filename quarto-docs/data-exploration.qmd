@@ -25,23 +25,64 @@ library(twriTemplates)
 ```{r}
 ## grab responses
 ## need to skip first 3 rows
-col_names <- read_csv("../data/PFAS_Survey_2023_04_13.csv", n_max = 0) |> 
+col_names <- read_csv("../data/PFAS_Survey_Data_Coded.csv", n_max = 0) |> 
   names()
-PFAS_Results <- read_csv("../data/PFAS_Survey_2023_04_13.csv",
+PFAS_Results <- read_csv("../data/PFAS_Survey_Data_Coded.csv",
                          col_names = col_names,
                          skip = 3) |> 
   clean_names()
 
-## grab questions
-read_csv("../data/PFAS_Survey_2023_04_13.csv",
-         n_max = 1) |> 
-  clean_names() |> 
-  select(starts_with("q"))
+
 
 ```
 
 
 ```{r}
+library(forcats)
+tibble(SEX = factor(as.character(PFAS_Results$q2), 
+                    levels = as.character(1:4),
+                    labels = c("Male", "Female", "Other", "No answer")),
+       AGEP = factor(as.character(PFAS_Results$q3),
+                     levels = as.character(1:7),
+                     labels = c("18:24", "25:34", "35:44", "45:54",
+                                "55-64", "65+", "No answer")),
+       RACE5 = as.character(PFAS_Results$q4),
+       SCHL = factor(as.character(PFAS_Results$q25),
+                     levels = as.character(1:8),
+                     labels = c("Some high school",
+                                "High school graduate or GED",
+                                "Associate degree",
+                                "Bachelor's degree",
+                                "Master's degree",
+                                "Doctorate or terminal degree",
+                                "Other",
+                                "No answer")
+                     )) |> 
+  mutate(RACE5 = case_when(
+    ## create new lvl for two ro more races response
+    !(RACE5 %in% c("1","2","3","4","5","6","7","8")) ~ "9",
+    .default = as.character(RACE5)
+  )) |> 
+  mutate(RACE5 = factor(RACE5,
+                        levels = as.character(1:9),
+                        labels = c(
+                          "American Indian/Native American or Alaska Native",
+                          "Asian",
+                          "Hispanic or Latino or Spanish Origin of any race",
+                          "Black or African American",
+                          "Native Hawaiian or Other Pacific Islander",
+                          "White or Caucasian",
+                          "Other",
+                          "No Answer",
+                          "Two or More"))) |> 
+  mutate(Q17 = factor(PFAS_Results$q17,
+                      levels = as.character(1:4),
+                      labels = c(
+                        "I've never heard of it, and don't know what it is",
+                        "I've heard of it or seen it somewhere, but don't know what it is",
+                        "I think I know what it is",
+                        "I'm confident I know what it is"))) |> 
+  summary(maxsum = 10)
 
 ```
 
@@ -56,6 +97,20 @@ The `echo: false` option disables the printing of code (only output is displayed
 
 
 
+# weighting
+
+raking: https://medium.com/pew-research-center-decoded/weighting-survey-data-with-the-pewmethods-r-package-d040afb0d2c2
+
 Analysis notes:
 
 1: are survey results weighted. Probably need to use raking to weight sample means.
+
+
+To do: 
+grab acs or census data to do raking
+race/ethnicity should be recoded to match allowable responses in ACS/Census data
+Age should match
+
+variables: age, gender, race/ethn, education
+
+https://www.surveypractice.org/article/2953-practical-considerations-in-raking-survey-data

@@ -1,0 +1,66 @@
+---
+references:
+
+
+- id: debellComputingWeightsAmerican2009
+  author:
+    - family: DeBell
+      given: Matthew
+    - family: Krosnick
+      given: Jon A
+  citation-key: debellComputingWeightsAmerican2009
+  collection-title: ANES Technical Report series
+  event-place: Ann Arbor, MI, and Palo Alto, CA
+  issued:
+    - year: 2009
+  language: en
+  number: nes012427
+  publisher: American National Election Studies
+  publisher-place: Ann Arbor, MI, and Palo Alto, CA
+  source: Zotero
+  title: Computing Weights for American National Election Study Survey Data
+  type: report
+  URL: http://www.electionstudies.org/resources/papers/nes012427.pdf
+
+
+- id: pasekAnesrakeANESRaking2018
+  author:
+    - family: Pasek
+      given: Josh
+  citation-key: pasekAnesrakeANESRaking2018
+  issued:
+    - year: 2018
+  title: 'anesrake: ANES Raking Implementation'
+  type: software
+  URL: https://CRAN.R-project.org/package=anesrake
+  version: '0.80'
+
+
+- id: kennedyUsingSexGender2022
+  author:
+    - family: Kennedy
+      given: Lauren
+    - family: Khanna
+      given: Katharine
+    - family: Simpson
+      given: Daniel
+    - family: Gelman
+      given: Andrew
+    - family: Jia
+      given: Yajun
+    - family: Teitler
+      given: Julien
+  citation-key: kennedyUsingSexGender2022
+  issued:
+    - year: 2022
+      month: 3
+      day: 23
+  language: en
+  number: arXiv:2009.14401
+  publisher: arXiv
+  source: arXiv.org
+  title: Using sex and gender in survey adjustment
+  type: article
+  URL: http://arxiv.org/abs/2009.14401
+
+...

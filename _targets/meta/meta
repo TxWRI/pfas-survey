@@ -1,0 +1,21 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+.Random.seed|object|c391d01b1d473dfe|||||||||||||||
+data_analysis_report|stem|fb939c07088392ea|d42349ca0955ecc8|850c769637018629|-38844089|quarto-docs/Data_Analysis.docx*quarto-docs/Data_Analysis.qmd|t19488.8312289445s|64d50a18a57e0a4f|67602|file|local|vector|||9.91||
+formated_pums|stem|978862f6369a7f66|bc6ce120e5bdca44|dcfd1ad920a19d3f|1175603263||t19487.8291023915s|e153efc03c3fd847|33515302|rds|local|vector|||10.29||
+get_pums|function|6541a1ce0c211fd2|||||||||||||||
+get_pums_data|function|6541a1ce0c211fd2|||||||||||||||
+impute_variables|function|5850bfbddd3f4469|||||||||||||||
+munge_pfas_survey|function|e1bee2f5c5644f3a|||||||||||||||
+pfas_analysis_data|stem|927faebcba0009dc|125d2bed2ea0aad4|ec2e9e4bfbf423b5|-337002145||t19487.5592448145s|89829a8c8e59d0dd|3171|rds|local|vector|||0.04||
+pfas_raking_data|stem|b246d59807bf524b|f9ea346cb69582bf|62601ba74682626b|476177979||t19487.7553542719s|6ed8fa29d8aa65d6|4384|rds|local|vector|||18.18||
+pfas_survey_csv|stem|b47fde2ca5a85eff|e55e944d91ec40c6|ef46db3751d8e999|-848068241|data/PFAS_Survey_Data_Coded.csv|t19482.8576388889s|e23f1e84297a4fed|304970|file|local|vector|||2.53|package tidyverse was built under R version 4.2.2. package ggplot2 was built under R version 4.2.3. package tibble was built under R version 4.2.3. package tidyr was built under R version 4.2.2. package readr was built under R version 4.2.2. package dplyr was built under R version 4.2.3. package stringr was built under R version 4.2.2. package forcats was built under R version 4.2.2. package lubridate was built under R version 4.2.2. package tidycensus was built under R version 4.2.3. package srvyr was built under R version 4.2.3|
+pfas_survey_data|stem|e79fa5c6804c5f1b|84aa31ff393ff353|0d640f92da15757b|-973338991||t19486.6405498868s|4037d62b01047543|78230|rds|local|vector|||0.56||
+prop_pums|function|f234733e38cce17e|||||||||||||||
+prop_pums_to_list|function|ec521da9adbf7019|||||||||||||||
+proportions_pums|stem|616abd0d657c390a|baff22e19220322f|46a271fdeadb28c6|918884691||t19487.8545510969s|800f3c51ba1e8b9f|995|rds|local|vector|||2198.6||
+pums|stem|a28059ba516703b1|1aeb49e25444a44d|399211215a3e443d|358669220||t19487.8288450831s|3ca0d2c8636d7c94|89751595|rds|local|vector|||2254.3|package janitor was built under R version 4.2.3. package mice was built under R version 4.2.3. package tidyverse was built under R version 4.2.2. package ggplot2 was built under R version 4.2.3. package tibble was built under R version 4.2.3. package tidyr was built under R version 4.2.2. package readr was built under R version 4.2.2. package dplyr was built under R version 4.2.3. package stringr was built under R version 4.2.2. package forcats was built under R version 4.2.2. package lubridate was built under R version 4.2.2. package tidycensus was built under R version 4.2.3. package srvyr was built under R version 4.2.3|
+rake|function|07aa522e16c2d5b5|||||||||||||||
+raked_weights|stem|f0e917921fbd6f42|7fcaf86ccbb3f7fa|f9580836944b3011|1400866253||t19488.6504100773s|2c3b565504e720df|13774|rds|local|vector|||0.11|Targets for rk_RACE5 do not sum to 100. Adjusting values to total 100Targets for rk_AGEP do not sum to 100. Adjusting values to total 100Targets for rk_SCHL do not sum to 100. Adjusting values to total 100|
+read_pfas_survey|function|74a24ef5d85ad622|||||||||||||||
+recode_pums|function|b926c5cff5412399|||||||||||||||
+target_prop_list|stem|672b1b509a76806e|c1d15225697903bd|750a2e325610505c|471146281||t19488.5144423711s|5529749806a42e69|653|rds|local|vector|||0||
