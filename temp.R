@@ -6,11 +6,13 @@ library(tidyverse)
 library(srvyr)
 library(anesrake)
 library(survey)
+library(twriTemplates)
 
 ## convert sex No answer to NA
 survey_data <- tar_read(pfas_analysis_data) |> 
   mutate(SEX = forcats::fct_na_level_to_value(SEX, "No answer")) |> 
-  select(SEX, AGEP, RACE5, SCHL, Q17)
+  select(SEX, AGEP, RACE5, SCHL, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
+         Q19_5, Q19_6, Q19_7, Q19_8, Q19_9, Q19_10, Q19_11, Q19_12, Q19_13)
 
 
 weights <- tar_read(raked_weights)$weightvec
@@ -27,20 +29,44 @@ survey_data |>  summary()
 survey_design |>  summary()
 
 
+## q16-q19 should probably be tables
 q_17_results <- survey_design |> 
   select(Q17) |> 
   group_by(Q17) |> 
-  summarise(proportion = survey_mean(vartype = "ci"),
-            total = survey_total(vartype = "ci"))
+  summarise(proportion = survey_mean(vartype = "se"))
+q_17_results
 
-ggplot(q_17_results) +
-  geom_pointrange(aes(x = Q17, y = proportion,
-                      ymin = proportion_low,
-                      ymax = proportion_upp)) +
-  scale_y_continuous(labels = scales::percent) +
-  coord_flip() +
-  labs(x = "", y = "% of Responses",
-       subtitle = "How would you describe your knowledge about PFAS as an environmental contaminant?")
+q_18_results <- survey_design |> 
+  select(Q18) |> 
+  summarise(mean = survey_mean(Q18))
+q_18_results
+
+q_19_12_results <- survey_design |>
+  select(Q19_12) |>
+  group_by(Q19_12) |>
+  mutate(Question = "Fire extinguising foam") |>
+  summarise(proportion = survey_mean(vartype = "se")) |>
+  rename(Response = Q19_12)
+
+q_19_12_results
+
+
+
+# ggplot(q_17_results) +
+#   geom_pointrange(aes(x = Q17, y = proportion,
+#                       ymin = proportion_low,
+#                       ymax = proportion_upp)) +
+#   scale_y_continuous(labels = scales::percent) +
+#   coord_flip() +
+#   labs(x = "", y = "Response Rate",
+#        subtitle = "Q: How would you describe your knowledge about PFAS as an environmental contaminant?") +
+#   theme_TWRI_print(base_family = "Arial") +
+#   theme(axis.text.y = element_text(hjust = 1),
+#         panel.grid.major.x = element_line(linetype = "dashed",
+#                                           size = 0.2,
+#                                           color = alpha("black", 0.5)),
+#         panel.grid.major.y = element_blank(),
+#         plot.subtitle = element_text(face = "bold"))
 
 m1 <- svyolr(Q17 ~ SEX + AGEP + RACE5 + SCHL,
              design = survey_design)

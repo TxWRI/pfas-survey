@@ -53,13 +53,139 @@ munge_pfas_survey <- function(x) {
                             "Other",
                             "No answer",
                             "Two or More"))) |> 
-    mutate(Q17 = factor(PFAS_Results$q17,
+    mutate(Q16 = factor(PFAS_Results$q16,
+                        levels = as.character(1:3),
+                        labels = c(
+                          "Yes",
+                          "No",
+                          "Not sure"
+                        )),
+           Q17 = factor(PFAS_Results$q17,
                         levels = as.character(1:4),
                         labels = c(
                           "I've never heard of it, and don't know what it is",
                           "I've heard of it or seen it somewhere, but don't know what it is",
                           "I think I know what it is",
-                          "I'm confident I know what it is")))
+                          "I'm confident I know what it is")),
+           Q18 = as.numeric(PFAS_Results$q18),
+           Q19_1 = factor(PFAS_Results$q19_1,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_2 = factor(PFAS_Results$q19_2,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_3 = factor(PFAS_Results$q19_3,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_4 = factor(PFAS_Results$q19_4,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_5 = factor(PFAS_Results$q19_5,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_6 = factor(PFAS_Results$q19_6,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_7 = factor(PFAS_Results$q19_7,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_8 = factor(PFAS_Results$q19_8,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_9 = factor(PFAS_Results$q19_9,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_10 = factor(PFAS_Results$q19_10,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_11 = factor(PFAS_Results$q19_11,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_12 = factor(PFAS_Results$q19_12,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          )),
+           Q19_13 = factor(PFAS_Results$q19_13,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Not at all familiar",
+                            "Slightly familiar",
+                            "Moderately familiar",
+                            "Very familiar",
+                            "Extremely familiar"
+                          ))
+                        )
   
   ## since ACS data only record binary sex
   ## following Gelman's suggestion this will recode sex as "not male"

@@ -5,7 +5,7 @@ author: Michael Schramm
 date: today
 reference-doc: format.docx
 bibliography: bibliography.yaml
-csl: https://www.zotero.org/styles/council-of-science-editors-author-date?source=1
+#csl: https://www.zotero.org/styles/council-of-science-editors-author-date?source=1
 ---
 
 ```{r setup}
@@ -21,6 +21,8 @@ library(tidyverse)
 library(anesrake)
 library(flextable)
 library(gtsummary)
+library(officedown)
+library(officer)
 
 ## if running in interactive, the store needs to be set to root directory
 if(interactive()) {
@@ -37,9 +39,10 @@ if(interactive()) {
 
 ## Survey
 
-To do
+
 
 ```{r}
+
 unweighted_demo <- tar_read(pfas_analysis_data, store = store)
 unweighted_demo |> 
   select(`Sex/Gender` = SEX,
@@ -52,11 +55,14 @@ unweighted_demo |>
   tbl_summary(include = c(`Sex/Gender`, `Age`, `Race/Ethnicity`, `Educational`)) |>
   as_flex_table() |>
   style(pr_t = fp_text_default(font.size = 9), part = "body") |>
-  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
-  set_table_properties(layout = "autofit") |>
+  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |> 
   hline(i = 5, j = c(1:2), part = "body") |>
   hline(i = 13, j = c(1:2), part = "body") |>
-  hline(i = 23, j = c(1:2), part = "body")
+  hline(i = 23, j = c(1:2), part = "body") |> 
+  set_table_properties(layout = "autofit") |> 
+  padding(padding.top = 0, padding.bottom = 0, part = "body") |> 
+  set_caption(caption = "Demographic profile (unadjusted) of survey respondents.",
+              autonum = run_autonum(seq_id = "tab", bkm = "tabdemo"))
 ```
 
 
@@ -64,17 +70,16 @@ unweighted_demo |>
 ## Data Analysis
 
 Prior to analysis, individual survey responses were weighted so that 
-marginal proportions of the survey matched national 
+marginal proportions of the survey (`r run_reference("tabdemo")`) matched national 
 level benchmarks from the 5-year 2021 American Community Survey (ACS) on 
-sex/gender, age group, race/ethnicity, and education level. Weights were 
+sex/gender, age group, race/ethnicity, and education level 
+(`r run_reference("tabweights")`). Weights were 
 developed by poststratification raking using the American National Election 
 Study (ANES) weighting algorithm implemented in the *anesrake* R package 
 [@debellComputingWeightsAmerican2009; @pasekAnesrakeANESRaking2018]. Weights on 
 gender were developed by re-coding "female" and "other" responses as "non-male" 
 because the ACS only provides binary response options for sex. Using this approach,
 responses from both "female" and "other" respondents have the same marginal weight.
-@kennedyUsingSexGender2022 provide substantial discussion on the treatment of 
-sex and gender in survey adjustment.
 @kennedyUsingSexGender2022 provide substantial discussion on the treatment of 
 sex and gender in survey adjustment.
 
@@ -145,12 +150,73 @@ unweighted_demo |>
                                   "Value" = "Value")) |> 
   flextable() |> 
   merge_v(j = c("Variable")) |> 
-  colformat_double(digits = 1) |> 
-  set_table_properties(layout = "autofit") |> 
+  colformat_double(digits = 1) |>
   hline(i = 3, j = c(2:7), part = "body") |> 
   hline(i = 10, j = c(2:7), part = "body") |> 
   hline(i = 19, j = c(2:7), part = "body") |> 
   style(pr_t = fp_text_default(font.size = 9), part = "body") |> 
-  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header")
+  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |> 
+  set_table_properties(layout = "autofit") |> 
+  padding(padding.top = 0, padding.bottom = 0, part = "body") |> 
+  set_caption(caption = "Marginal survey and target population proportions and marginal weighted values.",
+              autonum = run_autonum(seq_id = "tab", bkm = "tabweights"))
 ```
 
+# Results
+
+
+## Survey responses
+
+```{r}
+
+
+tar_read(q16_19_tables, store = store) |> 
+  select(Question, Response, proportion, proportion_se, mean, mean_se) |>
+  mutate(`Percent Response, SE` = case_when(
+    is.na(proportion) ~ NA,
+    .default = paste0(round(proportion * 100, 1),
+                      ", ",
+                      round(proportion_se * 100, 1))),
+    `Mean Response, SE` = case_when(
+      is.na(mean) ~ NA,
+      .default = paste0(round(mean, 1),
+                        ", ",
+                        round(mean_se, 1)))
+    ) |>
+  select(-c(proportion, proportion_se, mean, mean_se))  |>
+  add_row(Question = "How familiar are you with the following items as potential sources of PFAS?",
+          .before = 9) |> 
+  flextable() |>
+  merge_v(j = c("Question")) |>
+  hline(i = 3, j = c(1:4), part = "body") |>
+  hline(i = 7, j = c(1:4), part = "body") |>
+  hline(i = 8, j = c(1:4), part = "body") |>
+  hline(i = 14, j = c(1:4), part = "body") |>
+  hline(i = 19, j = c(1:4), part = "body") |>
+  hline(i = 24, j = c(1:4), part = "body") |>
+  hline(i = 29, j = c(1:4), part = "body") |>
+  hline(i = 34, j = c(1:4), part = "body") |>
+  hline(i = 39, j = c(1:4), part = "body") |>
+  hline(i = 44, j = c(1:4), part = "body") |>
+  hline(i = 49, j = c(1:4), part = "body") |>
+  hline(i = 54, j = c(1:4), part = "body") |>
+  hline(i = 59, j = c(1:4), part = "body") |>
+  hline(i = 64, j = c(1:4), part = "body") |>
+  hline(i = 69, j = c(1:4), part = "body") |>
+  style(pr_t = fp_text_default(font.size = 9), part = "body") |>
+  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
+  set_table_properties(layout = "autofit") |>
+  padding(i = c(10:74), j = 1, padding.left = 20, part = "body") |>
+  padding(padding.top = 0, padding.bottom = 0, part = "all") |> 
+    set_caption(caption = "Summary of weighted survey responses.",
+              autonum = run_autonum(seq_id = "tab", bkm = "tabweightedresponses"))
+```
+
+## Correlations
+
+
+## Models
+
+
+
+# References

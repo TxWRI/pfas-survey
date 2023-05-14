@@ -8,10 +8,14 @@ targets::tar_option_set(
   packages = c("anesrake",
                "janitor",
                "mice",
+               "officedown",
+               "officer",
                "tidyverse",
                "tidycensus",
                "srvyr",
-               "survey")
+               "survey",
+               "svyEffects",
+               "twriTemplates")
 )
 
 
@@ -19,6 +23,7 @@ targets::tar_option_set(
 source("R/ACS_Data.R")
 source("R/PFAS_Survey_Data.R")
 source("R/Weights.R")
+source("R/Tables.R")
 
 
 list(
@@ -58,6 +63,12 @@ list(
   
   
   
+  ## some reporting tables
+  tar_target(q16_19_tables,
+             table_q16_q19(pfas_analysis_data,
+                           raked_weights)),
+  
   ## Report
-  tar_quarto(data_analysis_report, "quarto-docs/Data_Analysis.qmd")
+  tar_quarto(data_analysis_report, "quarto-docs/Data_Analysis.qmd",
+             quiet = FALSE)
 )
