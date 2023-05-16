@@ -7,6 +7,7 @@ library(srvyr)
 library(anesrake)
 library(survey)
 library(twriTemplates)
+library(gtsummary)
 
 ## convert sex No answer to NA
 survey_data <- tar_read(pfas_analysis_data) |> 
@@ -117,3 +118,60 @@ ggplot(preds,
 ## 1 population proportion of responses to Q17 and changes in use of pfas
 ## 2 response by demographics
 ## 3 response by community exposure, community impact, and other desired variables.
+
+
+
+m1 <- targets::tar_read(m1)
+grants_tidy <- function(x, ...) {
+  broom::tidy(x, ...) %>%
+    dplyr::mutate(
+      p.value =
+        pnorm(abs(statistic), lower.tail = FALSE) * 2
+    )
+}
+
+tbl <- tbl_regression(
+  m1,
+  exponentiate = TRUE,
+  tidy_fun = grants_tidy
+  ) |> 
+  add_significance_stars(hide_ci = FALSE, hide_p = FALSE)
+tbl
+
+
+
+## relevel race
+levels(tar_read(pfas_analysis_data)$RACE5)
+tar_read(pfas_analysis_data) |> 
+  mutate(RACE5 = forcats::fct_infreq(RACE5)) |> 
+  pull(RACE5) |> 
+  str()
+
+##############################
+library(srvyr)
+
+df <- tar_read(pfas_analysis_data) |> 
+  mutate(SEX = forcats::fct_na_level_to_value(SEX, "No answer")) |> 
+  select(SEX, AGEP, RACE2, SCHL, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
+         Q19_5, Q19_6, Q19_7, Q19_8, Q19_9, Q19_10, Q19_11, Q19_12, Q19_13)
+df$weights <- tar_read(raked_weights)$weightvec
+
+survey_design <- df |>
+  as_survey_design(weights = weights)
+
+m_df <- tibble(model = c(
+  "Drinking water", "Public waterways near waste disposal sites",
+  "Soils near waste disposal sites", "Dairy products",
+  "Fresh produce", "Freshwater fish", "Seafood", "Food packaging",
+  "Non-stick cookware", "Personal hygiene products", 
+  "Household products (fabrics, cleaning products, paints & sealants",
+  "Fire extinguishing foams", "Fertilizers from wastewater treatment plants"),
+  iv = c("Q19_1","Q19_2","Q19_3","Q19_4","Q19_5",
+         "Q19_6","Q19_7","Q19_8","Q19_9","Q19_10","Q19_11",
+         "Q19_12","Q19_13")) |> 
+  mutate(m = map(iv,
+                 ~{
+                   fmla <- paste0(.x, "~ SEX + AGEP + RACE2 + SCHL + Q16")
+                   svyolr(fmla,
+                          design = survey_design)
+                 }))

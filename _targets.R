@@ -6,6 +6,7 @@ library(targets)
 library(tarchetypes)
 targets::tar_option_set(
   packages = c("anesrake",
+               "gtsummary",
                "janitor",
                "mice",
                "officedown",
@@ -24,6 +25,8 @@ source("R/ACS_Data.R")
 source("R/PFAS_Survey_Data.R")
 source("R/Weights.R")
 source("R/Tables.R")
+source("R/Models.R")
+
 
 
 list(
@@ -40,7 +43,7 @@ list(
   
   ## Functions in PFAS_SurveyData.R
   ## read in and clean up survey data for analysis prep
-  tar_target(pfas_survey_csv, 
+  tar_target(pfas_survey_csv,
              "data/PFAS_Survey_Data_Coded.csv",
              format = "file"),
   tar_target(pfas_survey_data,
@@ -54,12 +57,34 @@ list(
   ## impute missing data
   tar_target(pfas_raking_data,
              impute_variables(pfas_analysis_data)),
-  
+
   ## Rake weights
   ## Functions in Weights.R
   tar_target(raked_weights,
              rake(target_prop_list,
                   pfas_raking_data)),
+
+  
+  ## run svyolr models next
+  tar_target(m1,
+             fit_m1(pfas_analysis_data,
+                    raked_weights)),
+  
+  tar_target(m2,
+             fit_m2(pfas_analysis_data,
+                    raked_weights)),
+  
+  tar_target(m3,
+             fit_m3(pfas_analysis_data,
+                    raked_weights)),
+  
+  ## marginal estimates of m2 models
+  tar_target(marginal_m2,
+             m2_ame(m2)),
+  
+  ## marginal estimates of m3 models
+  tar_target(marginal_m3,
+             m3_ame(m3)),
   
   
   
@@ -70,5 +95,5 @@ list(
   
   ## Report
   tar_quarto(data_analysis_report, "quarto-docs/Data_Analysis.qmd",
-             quiet = FALSE)
+            quiet = FALSE)
 )

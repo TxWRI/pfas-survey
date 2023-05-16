@@ -53,6 +53,20 @@ munge_pfas_survey <- function(x) {
                             "Other",
                             "No answer",
                             "Two or More"))) |> 
+    mutate(RACE2 = case_when(
+      RACE5 %in% c("American Indian/Native American or Alaska Native",
+                   "Asian",
+                   "Hispanic or Latino or Spanish Origin of any race",
+                   "Black or African American",
+                   "Native Hawaiian or Other Pacific Islander",
+                   "Other",
+                   "Two or More") ~ "2", ## Non-white
+      RACE5 == "White or Caucasian" ~ "1", ## White
+      RACE5 == "No answer" ~ "3" ## No Answer
+    )) |> 
+    mutate(RACE2 = factor(RACE2,
+                   levels = as.character(1:3),
+                   labels = c("White", "Non-white", "No answer"))) |> 
     mutate(Q16 = factor(PFAS_Results$q16,
                         levels = as.character(1:3),
                         labels = c(
@@ -184,8 +198,207 @@ munge_pfas_survey <- function(x) {
                             "Moderately familiar",
                             "Very familiar",
                             "Extremely familiar"
-                          ))
+                          )),
+           Q20_1 = factor(PFAS_Results$q20_1,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_2 = factor(PFAS_Results$q20_2,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_3 = factor(PFAS_Results$q20_3,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_4 = factor(PFAS_Results$q20_4,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_5 = factor(PFAS_Results$q20_5,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_6 = factor(PFAS_Results$q20_6,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_7 = factor(PFAS_Results$q20_7,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_8 = factor(PFAS_Results$q20_8,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_9 = factor(PFAS_Results$q20_9,
+                          levels = as.character(1:5),
+                          labels = c(
+                            "Will never change",
+                            "Might change",
+                            "Planning to change",
+                            "Have already changed",
+                            "Not sure"
+                          )),
+           Q20_10 = factor(PFAS_Results$q20_10,
+                           levels = as.character(1:5),
+                           labels = c(
+                             "Will never change",
+                             "Might change",
+                             "Planning to change",
+                             "Have already changed",
+                             "Not sure"
+                           )),
+           Q20_11 = factor(PFAS_Results$q20_11,
+                           levels = as.character(1:5),
+                           labels = c(
+                             "Will never change",
+                             "Might change",
+                             "Planning to change",
+                             "Have already changed",
+                             "Not sure"
+                           )),
+           Q20_12 = factor(PFAS_Results$q20_12,
+                           levels = as.character(1:5),
+                           labels = c(
+                             "Will never change",
+                             "Might change",
+                             "Planning to change",
+                             "Have already changed",
+                             "Not sure"
+                           )),
+           Q20_13 = factor(PFAS_Results$q20_13,
+                           levels = as.character(1:5),
+                           labels = c(
+                             "Will never change",
+                             "Might change",
+                             "Planning to change",
+                             "Have already changed",
+                             "Not sure"
+                           ))
                         )
+  
+  ## reorder q20 with Not sure as 2nd never -> not sure -> might-> planning to change -> have already changed
+  PFAS_Results <- PFAS_Results |> 
+    mutate(Q20_1 = forcats::fct_relevel(Q20_1, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+                                                 )),
+           Q20_2 = forcats::fct_relevel(Q20_2, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_3 = forcats::fct_relevel(Q20_3, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_4 = forcats::fct_relevel(Q20_4, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_5 = forcats::fct_relevel(Q20_5, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_6 = forcats::fct_relevel(Q20_6, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_7 = forcats::fct_relevel(Q20_7, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_8 = forcats::fct_relevel(Q20_8, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_9 = forcats::fct_relevel(Q20_9, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_10 = forcats::fct_relevel(Q20_10, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_11 = forcats::fct_relevel(Q20_11, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_12 = forcats::fct_relevel(Q20_12, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           )),
+           Q20_13 = forcats::fct_relevel(Q20_13, c("Will never change",
+                                                 "Not sure",
+                                                 "Might change",
+                                                 "Planning to change",
+                                                 "Have already changed"
+           ))
+           )
   
   ## since ACS data only record binary sex
   ## following Gelman's suggestion this will recode sex as "not male"
@@ -202,18 +415,19 @@ munge_pfas_survey <- function(x) {
     ))
   
   ## convert No answers to NAs
-  PFAS_Results <- PFAS_Results |> 
+  PFAS_Results <- PFAS_Results |>
     mutate(AGEP = fct_na_level_to_value(AGEP, "No answer"),
            RACE5 = fct_na_level_to_value(RACE5, "No answer"),
+           RACE2 = fct_na_level_to_value(RACE2, "No answer"),
            SCHL = fct_na_level_to_value(SCHL, "No answer"))
-  
+
 }
 
 
 impute_variables <- function(x) {
   ## select demo data used for imputing values
   survey_data <- x |> 
-    select(SEX_NM, AGEP, RACE5, SCHL)
+    select(SEX_NM, AGEP, RACE2, SCHL)
   ## impute missing values using random forest
   imputed_data <- mice(survey_data, maxit = 30, seed = 1234,
                        method = "rf", printFlag = FALSE)
@@ -225,7 +439,7 @@ impute_variables <- function(x) {
   imputed_data <- imputed_data |> 
     rename(rk_SEX_NM = SEX_NM,
            rk_AGEP = AGEP,
-           rk_RACE5 = RACE5,
+           rk_RACE2 = RACE2,
            rk_SCHL = SCHL)
   x |> 
     bind_cols(imputed_data)

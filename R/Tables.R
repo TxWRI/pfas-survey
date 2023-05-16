@@ -6,7 +6,7 @@ table_q16_q19 <- function(df, weights) {
   ## convert sex No answer to NA
   df <- df |> 
     mutate(SEX = forcats::fct_na_level_to_value(SEX, "No answer")) |> 
-    select(SEX, AGEP, RACE5, SCHL, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
+    select(SEX, AGEP, RACE2, SCHL, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
            Q19_5, Q19_6, Q19_7, Q19_8, Q19_9, Q19_10, Q19_11, Q19_12, Q19_13)
   df$weights <- weights$weightvec
   

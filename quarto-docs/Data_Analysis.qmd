@@ -5,7 +5,7 @@ author: Michael Schramm
 date: today
 reference-doc: format.docx
 bibliography: bibliography.yaml
-#csl: https://www.zotero.org/styles/council-of-science-editors-author-date?source=1
+csl: https://www.zotero.org/styles/council-of-science-editors-author-date?source=1
 ---
 
 ```{r setup}
@@ -14,7 +14,9 @@ bibliography: bibliography.yaml
 #| warning: false
 
 
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE,
+                      dev = "ragg_png",
+                      dpi = 300)
 options(tidyverse.quiet = TRUE)
 library(targets)
 library(tidyverse)
@@ -23,6 +25,9 @@ library(flextable)
 library(gtsummary)
 library(officedown)
 library(officer)
+library(survey)
+library(svyEffects)
+library(twriTemplates)
 
 ## if running in interactive, the store needs to be set to root directory
 if(interactive()) {
@@ -69,103 +74,130 @@ unweighted_demo |>
 
 ## Data Analysis
 
+### Weighting
+
 Prior to analysis, individual survey responses were weighted so that 
-marginal proportions of the survey (`r run_reference("tabdemo")`) matched national 
-level benchmarks from the 5-year 2021 American Community Survey (ACS) on 
-sex/gender, age group, race/ethnicity, and education level 
-(`r run_reference("tabweights")`). Weights were 
-developed by poststratification raking using the American National Election 
-Study (ANES) weighting algorithm implemented in the *anesrake* R package 
-[@debellComputingWeightsAmerican2009; @pasekAnesrakeANESRaking2018]. Weights on 
+marginal proportions of the survey (`r run_reference("tabdemo")`) matched 
+national level benchmarks from the 5-year 2021 American Community Survey (ACS) 
+on sex/gender, age group, race/ethnicity, and education level 
+(`r run_reference("tabweights")`). Weights on 
 gender were developed by re-coding "female" and "other" responses as "non-male" 
 because the ACS only provides binary response options for sex. Using this approach,
 responses from both "female" and "other" respondents have the same marginal weight.
 @kennedyUsingSexGender2022 provide substantial discussion on the treatment of 
-sex and gender in survey adjustment.
-
-
+sex and gender in survey adjustment. Due to small subpopulation sample sizes
+within the Race/Ethnicity variable, Race/Ethnicity were recoded as 
+White or Caucasian and Non-white categories. Weights were 
+developed by poststratification raking using the American National Election 
+Study (ANES) weighting algorithm implemented in the *anesrake* R package 
+[@debellComputingWeightsAmerican2009; @pasekAnesrakeANESRaking2018].
 
 ```{r}
 unweighted_demo <- tar_read(pfas_analysis_data, store = store)
 unweighted_demo <- unweighted_demo |> 
   select(`Sex/Gender` = SEX_NM,
          `Age` = AGEP,
-         `Race/Ethnicity` = RACE5,
-         `Educational` = SCHL) |> 
+         `Race/Ethnicity` = RACE2,
+         `Education` = SCHL) |> 
   mutate(`Sex/Gender` = forcats::fct_na_value_to_level(`Sex/Gender`, level = "No answer"),
          Age = forcats::fct_na_value_to_level(Age, level = "No answer"),
          `Race/Ethnicity` = forcats::fct_na_value_to_level(`Race/Ethnicity`, level = "No answer"),
-         Educational = forcats::fct_na_value_to_level(Educational, level = "No answer")) |> 
-  tbl_summary(include = c(`Sex/Gender`, `Age`, `Race/Ethnicity`, `Educational`),
+         Education = forcats::fct_na_value_to_level(Education, level = "No answer")) |>
+  tbl_summary(include = c(`Sex/Gender`, `Age`, `Race/Ethnicity`, `Education`),
               statistic = list(all_categorical() ~"{n}")) |>
   as_tibble() |>
   rename(`Unweighted N` = "**N = 1,100**",
-         Value = "**Characteristic**") |> 
-  filter(!is.na(`Unweighted N`)) |> 
+         Value = "**Characteristic**") |>
+  filter(!is.na(`Unweighted N`)) |>
   mutate(`Variable` = c(rep("Sex/Gender",3),
                         rep("Age", 7),
-                        rep("Race/Ethnicity", 9),
+                        rep("Race/Ethnicity", 3),
                         rep("Education", 8)),
-         `Unweighted N` = as.integer(`Unweighted N`)) |> 
-  group_by(Variable) |> 
-  mutate(`Unweighted %` = round(`Unweighted N` / sum(`Unweighted N`) * 100, 1)) |> 
+         `Unweighted N` = as.integer(`Unweighted N`)) |>
+  group_by(Variable) |>
+  mutate(`Unweighted %` = round(`Unweighted N` / sum(`Unweighted N`) * 100, 1)) |>
   select(Variable, Value, `Unweighted N`, `Unweighted %`)
 
 
-weighted_demo <- tar_read(raked_weights, store = store) |>  
+weighted_demo <- tar_read(raked_weights, store = store) |>
   summary()
 
 
 
 df <- tibble(
   demographic_indicators = list(`Sex` = as_tibble(weighted_demo$rk_SEX_NM,
-                                                  rownames = "value") |> 
+                                                  rownames = "value") |>
                                   mutate(`Variable` = "Sex/Gender"),
-                                `Race/Ethnicity` = as_tibble(weighted_demo$rk_RACE5,
-                                                             rownames = "value") |> 
+                                `Race/Ethnicity` = as_tibble(weighted_demo$rk_RACE2,
+                                                             rownames = "value") |>
                                   mutate(`Variable` = "Race/Ethnicity"),
                                 `Age` = as_tibble(weighted_demo$rk_AGEP,
-                                                  rownames = "value") |> 
+                                                  rownames = "value") |>
                                   mutate(`Variable` = "Age"),
                                 `Education` = as_tibble(weighted_demo$rk_SCHL,
-                                                        rownames = "value") |> 
+                                                        rownames = "value") |>
                                   mutate(`Variable` = "Education"))
 )
-weighted_demo <- df |> 
-  unnest(cols = c(demographic_indicators)) |> 
-  select(`Variable`, value, Target, `Wtd N`, `Wtd %`) |> 
-  filter(value != "Total") |> 
-  rename(Value = value) |> 
+weighted_demo <- df |>
+  unnest(cols = c(demographic_indicators)) |>
+  select(`Variable`, value, Target, `Wtd N`, `Wtd %`) |>
+  filter(value != "Total") |>
+  rename(Value = value) |>
   mutate(Target = round(Target * 100, 1),
          `Wtd N` = round(`Wtd N`, 1),
-         `Wtd %` = round(`Wtd %` * 100, 1)) |> 
+         `Wtd %` = round(`Wtd %` * 100, 1)) |>
   rename(`Target %` = Target,
          `Weighted N` = `Wtd N`,
          `Weighted %` = `Wtd %`)
 
 
 
-unweighted_demo |> 
-  left_join(weighted_demo, by = c("Variable" = "Variable", 
-                                  "Value" = "Value")) |> 
-  flextable() |> 
-  merge_v(j = c("Variable")) |> 
+unweighted_demo |>
+  left_join(weighted_demo, by = c("Variable" = "Variable",
+                                  "Value" = "Value")) |>
+  flextable() |>
+  merge_v(j = c("Variable")) |>
   colformat_double(digits = 1) |>
-  hline(i = 3, j = c(2:7), part = "body") |> 
-  hline(i = 10, j = c(2:7), part = "body") |> 
-  hline(i = 19, j = c(2:7), part = "body") |> 
-  style(pr_t = fp_text_default(font.size = 9), part = "body") |> 
-  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |> 
-  set_table_properties(layout = "autofit") |> 
-  padding(padding.top = 0, padding.bottom = 0, part = "body") |> 
+  hline(i = 3, j = c(2:7), part = "body") |>
+  hline(i = 10, j = c(2:7), part = "body") |>
+  hline(i = 13, j = c(2:7), part = "body") |>
+  style(pr_t = fp_text_default(font.size = 9), part = "body") |>
+  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
+  set_table_properties(layout = "autofit") |>
+  padding(padding.top = 0, padding.bottom = 0, part = "body") |>
   set_caption(caption = "Marginal survey and target population proportions and marginal weighted values.",
               autonum = run_autonum(seq_id = "tab", bkm = "tabweights"))
 ```
 
+
+### Models
+
+We developed three different proportional odds models 
+[@agrestiCategoricalDataAnalysis2002] to assess factors associated with a 
+respondent's (1) self-described knowledge of PFAS (4 repsonses ranging from 
+"I've neve heard of it, and don't know what it is" to "I'm confident I know 
+what it is"); (2) awareness of potential sources of PFAS (5 responses ranging 
+from "Not at all familiar" to "Extremely Familiar"); and (3) intention to change
+use of items assosciated with PFAS (5 responses ranging from "will never change"
+to "have already changed"). Dependent variables included Sex/Gender, Age,
+Race/Ethnicity, Education, and awareness of community exposure to PFAS (Yes, No, 
+Not Sure). All models were fit using the survey package in R version 4.2.1
+[@lumleyAnalysisComplexSurvey2004; @rcoreteamLanguageEnvironmentStatistical2022].
+
+
 # Results
 
+A majority of respondents have no knowledge (41.1%) or are unsure (47.4%) if 
+their community has been exposed to PFAS. Only 11.5% responded that they knew
+their community has been exposed to PFAS. When asked to describe knowledge level
+about PFAS, 45.1% responded that they have never heard of it and don't know what
+it is. An additional 31.6% responded they have heard of PFAS, but don't know what
+PFAS are.
 
-## Survey responses
+When asked about awareness of PFAS sources, between 45.0% and 51.1% of responses
+were not familiar with the given source at all. In comparison only 5.9% to 9.2%
+of responses indicated they were extremely familiar with the indicated source.
+
 
 ```{r}
 
@@ -212,11 +244,142 @@ tar_read(q16_19_tables, store = store) |>
               autonum = run_autonum(seq_id = "tab", bkm = "tabweightedresponses"))
 ```
 
-## Correlations
 
 
-## Models
 
+
+## Model Results
+
+We did not find evidence for any association between Sex, Race/Ethnicity, 
+and Education with self-described knowledge about PFAS (`r run_reference("tabmodel1")`). The odds 
+that someone in the 35:44 age bracket responded with a higher self-assessed
+knowledge level was 1.63 times that of someone in the 18:24 reference group.
+There is strong evidence that people aware of PFAS exposure in their communities
+self-report higher levels of knowledge about PFAS. People aware of PFAS exposure
+in their communities are 3.57 times and 4.35 times more likely to respond with a
+higher self-asessed knowledge level than those responding "No" or "Not sure" to
+awareness of PFAS contamination in their communities.
+
+
+
+
+```{r}
+
+m1 <- targets::tar_read(m1, store = store)
+
+
+
+olr_tidy <- function(x, ...) {
+  broom::tidy(x, ...) %>%
+    dplyr::mutate(
+      p.value =
+        pnorm(abs(statistic), lower.tail = FALSE) * 2
+    )
+}
+
+
+
+tbl_regression(m1,
+               exponentiate = TRUE,
+               label = list(SEX ~ "Sex",
+                            AGEP ~ "Age",
+                            RACE2 ~ "Race/Ethnicity",
+                            SCHL ~ "Education",
+                            Q16 ~ "Community PFAS Exposure"),
+               tidy_fun = olr_tidy) |>
+  add_significance_stars(hide_ci = FALSE, hide_p = FALSE) |> 
+  as_flex_table() |> 
+  style(pr_t = fp_text_default(font.size = 9), part = "body") |>
+  style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
+  style(pr_t = fp_text_default(font.size = 8), part = "footer") |>
+  set_table_properties(layout = "autofit") |>
+  padding(padding.top = 0, padding.bottom = 0, part = "all") |>
+  set_caption(caption = "Model 1 results.",
+              autonum = run_autonum(seq_id = "tab", bkm = "tabmodel1"))
+
+```
+
+
+```{r}
+#| label: fig-m2margins
+#| fig-height: 7.5
+#| fig-width: 6.5
+#| fig-dpi: 300
+#| fig-cap: Average marginal predicted probabilities to the question, "how familiar are you with the following items as potential sources of PFAS contamination?" Horizontal lines indicate the 95% confidence intervals of the marginal predicted probabilities.
+
+
+## marginal effects of m2 controlled from demographics
+marginal_m2 <- tar_read(marginal_m2, store = store)
+
+ggplot(marginal_m2) +
+  geom_pointrange(aes(y = y,
+                      x = predicted, 
+                      xmin = conf.low, 
+                      xmax = conf.high, 
+                      color = Q16),
+                  position = position_dodge(0.25),
+                  size = 0.25,
+                  alpha = 0.75) +
+  scale_color_viridis_d("Awareness of\nCommunity PFAS Exposure") +
+  facet_wrap(~model, ncol = 3,
+             labeller = labeller(model = label_wrap_gen(35)),
+             as.table = FALSE,
+             dir = "h") +
+  labs(x = "Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1),
+        legend.direction = "vertical",
+        legend.position = c(0.51,0.91),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9, hjust = 0),
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+
+
+  
+```
+
+
+```{r}
+#| label: fig-m3margins
+#| fig-height: 7.5
+#| fig-width: 6.5
+#| fig-dpi: 300
+#| fig-cap: Average marginal predicted probabilities to the question, "Please rate your intention to change your use of the following items because of their potential for PFAS contamination." Horizontal lines indicate the 95% confidence intervals of the marginal predicted probabilities.
+
+
+## marginal effects of m2 controlled from demographics
+marginal_m3 <- tar_read(marginal_m3, store = store)
+
+ggplot(marginal_m3) +
+  geom_pointrange(aes(y = y,
+                      x = predicted, 
+                      xmin = conf.low, 
+                      xmax = conf.high, 
+                      color = Q16),
+                  position = position_dodge(0.25),
+                  size = 0.25,
+                  alpha = 0.75) +
+  scale_color_viridis_d("Awareness of\nCommunity PFAS Exposure") +
+  facet_wrap(~model, ncol = 3,
+             labeller = labeller(model = label_wrap_gen(35)),
+             as.table = FALSE,
+             dir = "h") +
+  labs(x = "Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1),
+        legend.direction = "vertical",
+        legend.position = c(0.51,0.91),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9, hjust = 0),
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+
+
+  
+```
 
 
 # References

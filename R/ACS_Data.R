@@ -44,7 +44,11 @@ recode_pums <- function(x) {
       RAC1P == "9" & HISP == "01" ~ "9", ## two or more (need to add to dataset)
       HISP != "01" ~ "3", ## Hispanic
     )) |> 
-    select(PWGTP, AGEP, SCHL, SEX, RACE5) |>
+    mutate(RACE2 = case_when(
+      RACE5 != "6" ~ "2", ## Non-white
+      RACE5 == "6" ~ "1", ## White
+    )) |> 
+    select(PWGTP, AGEP, SCHL, SEX, RACE5, RACE2) |>
     ## converts character to vector with correct levels and labels
     mutate(SCHL = factor(SCHL,
                          levels = as.character(1:7),
@@ -69,7 +73,10 @@ recode_pums <- function(x) {
                             "Native Hawaiian or Other Pacific Islander",
                             "White or Caucasian",
                             "Other",
-                            "Two or More")))
+                            "Two or More")),
+           RACE2 = factor(RACE2,
+                          levels = as.character(1:2),
+                          labels = c("White", "Non-white")))
 }
 
 ## Creates proportion table using weighted ACS PUMS data
@@ -82,8 +89,8 @@ prop_pums <- function(x) {
     summarise(prop = survey_prop()) -> SEX
   x |> 
     as_survey_design(weights = PWGTP) |> 
-    group_by(RACE5) |> 
-    summarise(prop = survey_prop()) -> RACE5
+    group_by(RACE2) |> 
+    summarise(prop = survey_prop()) -> RACE2
   x |> 
     as_survey_design(weights = PWGTP) |> 
     group_by(AGEP) |> 
@@ -94,7 +101,7 @@ prop_pums <- function(x) {
     summarise(prop = survey_prop()) -> SCHL
   
   list(SEX = SEX, 
-       RACE5 = RACE5,
+       RACE2 = RACE2,
        AGEP = AGEP,
        SCHL = SCHL)
 }
@@ -107,15 +114,8 @@ prop_pums_to_list <- function(x) {
   rk_SEX <- x$SEX$prop
   names(rk_SEX) <- c("Male", "Not Male")
   
-  rk_RACE5 <- x$RACE5$prop
-  names(rk_RACE5) <- c("American Indian/Native American or Alaska Native",
-                    "Asian",
-                    "Hispanic or Latino or Spanish Origin of any race",
-                    "Black or African American",
-                    "Native Hawaiian or Other Pacific Islander",
-                    "White or Caucasian",
-                    "Other",
-                    "Two or More")
+  rk_RACE2 <- x$RACE2$prop
+  names(rk_RACE2) <- c("White", "Non-white")
   
   rk_AGEP <- x$AGEP$prop
   names(rk_AGEP) <- c("18:24", "25:34", "35:44", "45:54",
@@ -131,7 +131,7 @@ prop_pums_to_list <- function(x) {
                    "Other")
   
   list(rk_SEX_NM = rk_SEX,
-       rk_RACE5 = rk_RACE5,
+       rk_RACE2 = rk_RACE2,
        rk_AGEP = rk_AGEP,
        rk_SCHL = rk_SCHL)
 }

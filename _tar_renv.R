@@ -1,4 +1,8 @@
 library(targets)
 tar_renv(
-  extras = c("quarto", "ranger", "visNetwork")
+  extras = c("broom", 
+             "gtsummary", 
+             "quarto", 
+             "ranger", 
+             "visNetwork")
 )
