@@ -78,6 +78,10 @@ list(
              fit_m3(pfas_analysis_data,
                     raked_weights)),
   
+  ## marginal estimates of m1 models
+  tar_target(marginal_m1,
+             m1_ame(m1)),
+  
   ## marginal estimates of m2 models
   tar_target(marginal_m2,
              m2_ame(m2)),

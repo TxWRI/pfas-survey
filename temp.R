@@ -175,3 +175,12 @@ m_df <- tibble(model = c(
                    svyolr(fmla,
                           design = survey_design)
                  }))
+
+
+library(survey)
+library(svyEffects)
+m1 <- tar_read(m1)
+svy_effect <- svyAME(m1, varname = "Q16")
+
+plot(svy_effect)
+plot(svy_effect, what = "diffs")

@@ -1,7 +1,7 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|c14452a005e781bb|||||||||||||||
+.Random.seed|object|1d02ca66c18c84d7|||||||||||||||
 coor_table|function|199810c90b58b9ab|||||||||||||||
-data_analysis_report|stem|dc75169cbbfc4e33|f892d87d0117d0d6|ff402b1ec4597b08|-38844089|quarto-docs/Data_Analysis.docx*quarto-docs/Data_Analysis.qmd|t19493.8841089516s|da7ebb1bdf9cb49b|846064|file|local|vector|||17.15||
+data_analysis_report|stem|d8e274a2ba278dad|e1f5fe7899f68f97|61f7768b54bb1fda|-38844089|quarto-docs/Data_Analysis.docx*quarto-docs/Data_Analysis.qmd|t19494.8232978036s|1918b0fc1ca1278e|920324|file|local|vector|||18.58||
 fit_m1|function|7a6c892a71785d15|||||||||||||||
 fit_m2|function|4c55fe1e8d32a4cb|||||||||||||||
 fit_m3|function|916d96ccc145d25c|||||||||||||||
@@ -10,10 +10,12 @@ get_pums|function|6541a1ce0c211fd2|||||||||||||||
 get_pums_data|function|6541a1ce0c211fd2|||||||||||||||
 impute_variables|function|2b848dbda83eed02|||||||||||||||
 m1|stem|d8d45c290d5d77ae|e09d436d1eacb76a|ea8459427926fe5e|-324215237||t19493.7403862578s|69870166f4b3b41d|151149|rds|local|vector|||0.12||
+m1_ame|function|bf5f13400da70f08|||||||||||||||
 m2|stem|60867d290b713165|23a71afacca2eb56|347c07a51724bbee|-1313740730||t19493.7404021834s|848900ebd39f6a52|2640395|rds|local|vector|||1.03||
 m2_ame|function|cada56bf9c9af894|||||||||||||||
 m3|stem|130b47a49d47bcc7|70e17deb4672945e|9cf6e443e9bdfede|2146927826||t19493.7420940308s|08103ff8f682c38a|2670744|rds|local|vector|||1.11||
 m3_ame|function|cada56bf9c9af894|||||||||||||||
+marginal_m1|stem|075a242f7d228e66|3866aa9a90786fdb|e110dce942357105|1484693685||t19494.6005460057s|e031128ad4a59d4d|108198|rds|local|vector|||4.67||
 marginal_m2|stem|659c57b192f58469|0dfe26765fd58ef6|bd91806d1854de49|669138809||t19493.7409634541s|bc48bca60c381f11|11640815|rds|local|vector|||47.09||
 marginal_m3|stem|817e96970a4e7239|bca02740b52d9f59|b89f3f143babd4ee|908319740||t19493.7442166831s|4bf7fa16f2ffbb18|11768879|rds|local|vector|||48.84||
 munge_pfas_survey|function|3ed25ecc4186d22b|||||||||||||||

@@ -41,6 +41,30 @@ references:
   type: report
   URL: http://www.electionstudies.org/resources/papers/nes012427.pdf
 
+- id: hanmerCurveClarifyingBest2013
+  author:
+    - family: Hanmer
+      given: Michael J.
+    - family: Ozan Kalkan
+      given: Kerem
+  citation-key: hanmerCurveClarifyingBest2013
+  container-title: American Journal of Political Science
+  DOI: 10.1111/j.1540-5907.2012.00602.x
+  ISSN: '00925853'
+  issue: '1'
+  issued:
+    - year: 2013
+      month: 1
+  language: en
+  page: 263-277
+  source: DOI.org (Crossref)
+  title: >-
+    Behind the curve: clarifying the best approach to calculating predicted
+    probabilities and marginal effects from limited dependent variable models
+  title-short: Behind the Curve
+  type: article-journal
+  volume: '57'
+
 - id: kennedyUsingSexGender2022
   author:
     - family: Kennedy
@@ -110,6 +134,16 @@ references:
   title: 'R: A Language and Environment for Statistical Computing'
   type: software
   URL: https://www.R-project.org/
-...
 
+
+- id: santosSvyEffectsSimulationBasedMarginal2023
+  author:
+    - family: Santos
+      given: John
+  citation-key: santosSvyEffectsSimulationBasedMarginal2023
+  issued:
+    - year: 2023
+  title: 'svyEffects: Simulation-Based Marginal Effects for Survey-Weighted GLMs'
+  type: software
+  URL: https://github.com/jb-santos/svyEffects
 ...

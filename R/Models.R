@@ -15,6 +15,13 @@ fit_m1 <- function(df, weights) {
   
 }
 
+## gets the predicted average marginal effects from the models
+## fit above
+## and tidys them
+m1_ame <- function(x) {
+  svyAME(x, varname = "Q16")
+}
+
 
 fit_m2 <- function(df, weights) {
   ## convert sex No answer to NA
