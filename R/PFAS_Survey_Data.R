@@ -67,7 +67,10 @@ munge_pfas_survey <- function(x) {
     mutate(RACE2 = factor(RACE2,
                    levels = as.character(1:3),
                    labels = c("White", "Non-white", "No answer"))) |> 
-    mutate(Q16 = factor(PFAS_Results$q16,
+    mutate(Q9_6 = factor(PFAS_Results$q9_6,
+                         levels = c(0,1),
+                         labels = c("No", "Yes")),
+           Q16 = factor(PFAS_Results$q16,
                         levels = as.character(1:3),
                         labels = c(
                           "Yes",
