@@ -76,6 +76,13 @@ munge_pfas_survey <- function(x) {
            Q9_6 = factor(PFAS_Results$q9_6,
                          levels = c(0,1),
                          labels = c("No", "Yes")),
+           Q11_6 = factor(PFAS_Results$q11_6,
+                          levels = c(1,2,3,4,5),
+                          labels = c("Not as all concerned",
+                                     "Slightly concerned",
+                                     "Moderately concerned",
+                                     "Very concerned",
+                                     "Exteremly concerned")),
            Q16 = factor(PFAS_Results$q16,
                         levels = as.character(1:3),
                         labels = c(
