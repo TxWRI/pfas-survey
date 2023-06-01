@@ -112,3 +112,53 @@ m3_ame <- function(x) {
                        ~{.x$preds})) |> 
     unnest(preds)
 }
+
+
+
+fit_m4 <- function(df, weights) {
+  ## convert sex No answer to NA
+  df <- df |> 
+    mutate(SEX = forcats::fct_na_level_to_value(SEX, "No answer")) |> 
+    select(SEX, AGEP, RACE2, SCHL, Q6, Q9_6, Q11_6, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
+           Q19_5, Q19_6, Q19_7, Q19_8, Q19_9, Q19_10, Q19_11, Q19_12, Q19_13) |> 
+    mutate(Q6 = relevel(Q6, ref="Unfiltered tap water"))
+  
+  df$weights <- weights$weightvec
+  
+  survey_design <- df |>
+    as_survey_design(weights = weights)
+  
+  m4 <- svyglm(Q9_6 ~ SEX + AGEP + RACE2 + SCHL + Q16 + Q6,
+               design = survey_design,
+               family = binomial())
+  m4
+}
+
+
+
+fit_m5 <- function(df, weights) {
+  ## convert sex No answer to NA
+  df <- df |> 
+    mutate(SEX = forcats::fct_na_level_to_value(SEX, "No answer")) |> 
+    select(SEX, AGEP, RACE2, SCHL, Q6, Q9_6, Q11_6, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
+           Q19_5, Q19_6, Q19_7, Q19_8, Q19_9, Q19_10, Q19_11, Q19_12, Q19_13) |> 
+    mutate(Q6 = relevel(Q6, ref="Unfiltered tap water"))
+  
+  df$weights <- weights$weightvec
+  
+  survey_design <- df |>
+    as_survey_design(weights = weights)
+  
+  m5 <- svyolr(Q11_6 ~ SEX + AGEP + RACE2 + SCHL + Q6 + Q9_6,
+               design = survey_design)
+  m5
+}
+
+
+
+## gets the predicted average mariginal effects from the models
+## fit above
+## and tidys them
+m5_ame <- function(x) {
+  svyAME(x, varname = "Q9_6")
+}

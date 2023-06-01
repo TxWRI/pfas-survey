@@ -78,6 +78,14 @@ list(
              fit_m3(pfas_analysis_data,
                     raked_weights)),
   
+  tar_target(m4,
+             fit_m4(pfas_analysis_data,
+                    raked_weights)),
+  
+  tar_target(m5,
+             fit_m5(pfas_analysis_data,
+                    raked_weights)),
+  
   ## marginal estimates of m1 models
   tar_target(marginal_m1,
              m1_ame(m1)),
@@ -90,6 +98,9 @@ list(
   tar_target(marginal_m3,
              m3_ame(m3)),
   
+  ## marginal estimates of m5 models
+  tar_target(marginal_m5,
+             m5_ame(m5)),
   
   
   ## some reporting tables

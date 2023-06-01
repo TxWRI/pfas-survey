@@ -1,26 +1,32 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|1d02ca66c18c84d7|||||||||||||||
+.Random.seed|object|c8c304cb6d86ccd5|||||||||||||||
 coor_table|function|199810c90b58b9ab|||||||||||||||
-data_analysis_report|stem|d8e274a2ba278dad|e1f5fe7899f68f97|61f7768b54bb1fda|-38844089|quarto-docs/Data_Analysis.docx*quarto-docs/Data_Analysis.qmd|t19494.8232978036s|1918b0fc1ca1278e|920324|file|local|vector|||18.58||
+data_analysis_report|stem|0619b743bf838a52|532baa7d7d7c2461|525cafc7eabffa91|-38844089|quarto-docs/Data_Analysis.pdf*quarto-docs/Data_Analysis.qmd|t19509.923330238s|9e46584e97953bbf|1025007|file|local|vector|||34.51||
 fit_m1|function|7a6c892a71785d15|||||||||||||||
 fit_m2|function|4c55fe1e8d32a4cb|||||||||||||||
 fit_m3|function|916d96ccc145d25c|||||||||||||||
+fit_m4|function|7e778673334ed8e0|||||||||||||||
+fit_m5|function|36eea06311fcc149|||||||||||||||
 formated_pums|stem|ca7197d6b649d3f4|bc6ce120e5bdca44|1f3cb10a2a8ba618|1175603263||t19492.6574637012s|30cdd59e0f481b83|35740326|rds|local|vector|||13.78||
 get_pums|function|6541a1ce0c211fd2|||||||||||||||
 get_pums_data|function|6541a1ce0c211fd2|||||||||||||||
 impute_variables|function|2b848dbda83eed02|||||||||||||||
-m1|stem|d8d45c290d5d77ae|e09d436d1eacb76a|ea8459427926fe5e|-324215237||t19493.7403862578s|69870166f4b3b41d|151149|rds|local|vector|||0.12||
+m1|stem|0be9ee68a0e41cf3|e09d436d1eacb76a|ec312512bd7c64ba|-324215237||t19509.8178648417s|b349702cf1132359|152414|rds|local|vector|||0.11||
 m1_ame|function|bf5f13400da70f08|||||||||||||||
-m2|stem|60867d290b713165|23a71afacca2eb56|347c07a51724bbee|-1313740730||t19493.7404021834s|848900ebd39f6a52|2640395|rds|local|vector|||1.03||
+m2|stem|9997b87f3fbad59a|23a71afacca2eb56|3da46f882a24463a|-1313740730||t19509.8178826355s|652628faf01b5315|2641824|rds|local|vector|||1.03||
 m2_ame|function|cada56bf9c9af894|||||||||||||||
-m3|stem|130b47a49d47bcc7|70e17deb4672945e|9cf6e443e9bdfede|2146927826||t19493.7420940308s|08103ff8f682c38a|2670744|rds|local|vector|||1.11||
+m3|stem|7e81e63fa8669bde|70e17deb4672945e|99fdfcb6b4e6f584|2146927826||t19509.8178986231s|015ec8a2578f026d|2672178|rds|local|vector|||1.01||
 m3_ame|function|cada56bf9c9af894|||||||||||||||
-marginal_m1|stem|075a242f7d228e66|3866aa9a90786fdb|e110dce942357105|1484693685||t19494.6005460057s|e031128ad4a59d4d|108198|rds|local|vector|||4.67||
-marginal_m2|stem|659c57b192f58469|0dfe26765fd58ef6|bd91806d1854de49|669138809||t19493.7409634541s|bc48bca60c381f11|11640815|rds|local|vector|||47.09||
-marginal_m3|stem|817e96970a4e7239|bca02740b52d9f59|b89f3f143babd4ee|908319740||t19493.7442166831s|4bf7fa16f2ffbb18|11768879|rds|local|vector|||48.84||
-munge_pfas_survey|function|3ed25ecc4186d22b|||||||||||||||
-pfas_analysis_data|stem|d4edbe43e0627a6f|125d2bed2ea0aad4|345d157aa0aa7a59|-337002145||t19493.7401521656s|80bc176ff658b7b6|19619|rds|local|vector|||0.16||
-pfas_raking_data|stem|82808423b54a9631|f9ea346cb69582bf|5a0c2f9fe288d263|476177979||t19493.7403683864s|ac5b886987cc5f67|21354|rds|local|vector|||18.62||
+m4|stem|f943ce104a147fe5|b216796896587254|02e5c10f8331bb4c|-711938045||t19509.8178664972s|659d2a456dc5edee|478381|rds|local|vector|||0.06|noninteger successes in a binomial glm|
+m5|stem|c0e4e6313c1e539e|51d8bf974357250e|3054d26fc8325296|877161841||t19509.8179006954s|d6c34d5700a4c55c|171100|rds|local|vector|||0.13||
+m5_ame|function|594619891103c367|||||||||||||||
+marginal_m1|stem|c9c265bac1973197|3866aa9a90786fdb|4c8f3a1f12128e4b|1484693685||t19509.8179522599s|39c5df493a1bdf08|109216|rds|local|vector|||4.39||
+marginal_m2|stem|f7f9744d9baf8c3a|0dfe26765fd58ef6|8894275236ff0603|669138809||t19509.8185066475s|00239a98177032cf|11642202|rds|local|vector|||46.5||
+marginal_m3|stem|7429e8a008eb5558|bca02740b52d9f59|b470cd03d239bc5e|908319740||t19509.8190411544s|f0f0a41db81e9923|11770268|rds|local|vector|||44.72||
+marginal_m5|stem|d89da9064e05ec18|e3f8a7fee1a54b36|11617c1c551e21c8|236424164||t19509.8190689543s|782e5b7c297daf96|119708|rds|local|vector|||2.3||
+munge_pfas_survey|function|2a441b6fa24c31cc|||||||||||||||
+pfas_analysis_data|stem|6e951aea0dcc5345|125d2bed2ea0aad4|697e74a14b34264e|-337002145||t19509.8176340528s|7a3170a21e468b6f|20842|rds|local|vector|||0.16||
+pfas_raking_data|stem|9ce45171b0aa33ef|f9ea346cb69582bf|d263832869d05a6a|476177979||t19509.8178448248s|1797bfb1b791772a|22577|rds|local|vector|||18.14||
 pfas_survey_csv|stem|b47fde2ca5a85eff|e55e944d91ec40c6|ef46db3751d8e999|-848068241|data/PFAS_Survey_Data_Coded.csv|t19482.8576388889s|e23f1e84297a4fed|304970|file|local|vector|||2.53|package tidyverse was built under R version 4.2.2. package ggplot2 was built under R version 4.2.3. package tibble was built under R version 4.2.3. package tidyr was built under R version 4.2.2. package readr was built under R version 4.2.2. package dplyr was built under R version 4.2.3. package stringr was built under R version 4.2.2. package forcats was built under R version 4.2.2. package lubridate was built under R version 4.2.2. package tidycensus was built under R version 4.2.3. package srvyr was built under R version 4.2.3|
 pfas_survey_data|stem|e79fa5c6804c5f1b|84aa31ff393ff353|0d640f92da15757b|-973338991||t19486.6405498868s|4037d62b01047543|78230|rds|local|vector|||0.56||
 prop_pums|function|3a5e1cfed8c34ea7|||||||||||||||
@@ -28,11 +34,11 @@ prop_pums_to_list|function|74a6b2c01b9e7899|||||||||||||||
 proportions_pums|stem|a310128e78d2be3d|baff22e19220322f|c769e4caf376ca68|918884691||t19492.6774909813s|b768230cdbc96fc9|735|rds|local|vector|||1730.19||
 pums|stem|a28059ba516703b1|1aeb49e25444a44d|399211215a3e443d|358669220||t19487.8288450831s|3ca0d2c8636d7c94|89751595|rds|local|vector|||2254.3|package janitor was built under R version 4.2.3. package mice was built under R version 4.2.3. package tidyverse was built under R version 4.2.2. package ggplot2 was built under R version 4.2.3. package tibble was built under R version 4.2.3. package tidyr was built under R version 4.2.2. package readr was built under R version 4.2.2. package dplyr was built under R version 4.2.3. package stringr was built under R version 4.2.2. package forcats was built under R version 4.2.2. package lubridate was built under R version 4.2.2. package tidycensus was built under R version 4.2.3. package srvyr was built under R version 4.2.3|
 q16_18_tables|stem|79e3c661b7b4931f|e9e682c3a1250363|6aaa97ca37c745bc|1346753191||t19490.7058752797s|1416663ce6eb40fb|1821|rds|local|vector|||1.28||
-q16_19_tables|stem|de57d9759c997fd3|e9e682c3a1250363|66e5e2eb3dd5e0a4|1995229174||t19493.7403842194s|4632d7537c330bfb|2067|rds|local|vector|||1.25||
+q16_19_tables|stem|c191a5bacd4ecfce|e9e682c3a1250363|4d47127fdbda08df|1995229174||t19509.8178628859s|a69d4596f1dbdb95|2413|rds|local|vector|||1.42||
 rake|function|c5b2bd011b001702|||||||||||||||
-raked_weights|stem|434b2960cd16150b|7fcaf86ccbb3f7fa|0a50fece1b5837f8|1400866253||t19493.7403694021s|73622126bd00a83a|30830|rds|local|vector|||0.04|Targets for rk_AGEP do not sum to 100. Adjusting values to total 100Targets for rk_SCHL do not sum to 100. Adjusting values to total 100|
+raked_weights|stem|0606b6882ad70e23|7fcaf86ccbb3f7fa|dbf7c725bd35b09a|1400866253||t19509.8178459131s|8825929d97884636|32099|rds|local|vector|||0.05|Targets for rk_AGEP do not sum to 100. Adjusting values to total 100Targets for rk_SCHL do not sum to 100. Adjusting values to total 100|
 read_pfas_survey|function|74a24ef5d85ad622|||||||||||||||
 recode_pums|function|54580698790435d7|||||||||||||||
-table_q16_q19|function|55e4da008f3ceaf2|||||||||||||||
+table_q16_q19|function|14a17e5148973990|||||||||||||||
 target_prop_list|stem|8a0531e2cb743204|c1d15225697903bd|11189655d6430138|471146281||t19492.6774914273s|78255450da878a2f|453|rds|local|vector|||0||
 weight_coefficients|stem|c0228ad54f7b291e|0d9efb012abe8092|cec056a3eb9f0dcc|1629522478||t19491.7572306147s||5934|rds|local|vector|||0.08||error in evaluating the argument x in selecting a method for function t nonnumeric argument to binary operator

@@ -82,7 +82,7 @@ munge_pfas_survey <- function(x) {
                                      "Slightly concerned",
                                      "Moderately concerned",
                                      "Very concerned",
-                                     "Exteremly concerned")),
+                                     "Extremely concerned")),
            Q16 = factor(PFAS_Results$q16,
                         levels = as.character(1:3),
                         labels = c(

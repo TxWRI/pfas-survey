@@ -6,12 +6,33 @@ table_q16_q19 <- function(df, weights) {
   ## convert sex No answer to NA
   df <- df |> 
     mutate(SEX = forcats::fct_na_level_to_value(SEX, "No answer")) |> 
-    select(SEX, AGEP, RACE2, SCHL, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
+    select(SEX, AGEP, RACE2, SCHL, Q6, Q9_6, Q11_6, Q16, Q17, Q18, Q19_1, Q19_2, Q19_3, Q19_4,
            Q19_5, Q19_6, Q19_7, Q19_8, Q19_9, Q19_10, Q19_11, Q19_12, Q19_13)
   df$weights <- weights$weightvec
   
   survey_design <- df |>
     as_survey_design(weights = weights)
+  
+  q_6_results <- survey_design |> 
+    select(Q6) |> 
+    group_by(Q6) |> 
+    summarise(proportion = survey_mean(vartype = "se")) |> 
+    mutate(Question = "What is your main source of drinking water?") |> 
+    rename(Response = Q6)
+  
+  q_9_6_results <- survey_design |> 
+    select(Q9_6) |> 
+    group_by(Q9_6) |> 
+    summarise(proportion = survey_mean(vartype = "se")) |> 
+    mutate(Question = "To your knowledge, has your primary source of drinking water been impacted by PFAS?") |> 
+    rename(Response = Q9_6)
+  
+  q_11_6_results <- survey_design |> 
+    select(Q11_6) |> 
+    group_by(Q11_6) |> 
+    summarise(proportion = survey_mean(vartype = "se")) |> 
+    mutate(Question = "How concerned are you about PFAS in your drinking water?") |> 
+    rename(Response = Q11_6)
 
   q_16_results <- survey_design |>
     select(Q16) |>
@@ -126,7 +147,8 @@ table_q16_q19 <- function(df, weights) {
   
   
   
-  bind_rows(q_16_results, q_17_results, q_18_results, q_19_1_results,
+  bind_rows(q_6_results, q_9_6_results, q_11_6_results,
+            q_16_results, q_17_results, q_18_results, q_19_1_results,
             q_19_2_results, q_19_3_results, q_19_4_results,
             q_19_5_results, q_19_6_results, q_19_7_results,
             q_19_8_results, q_19_9_results, q_19_10_results,
