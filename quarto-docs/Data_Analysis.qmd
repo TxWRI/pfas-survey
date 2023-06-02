@@ -4,6 +4,13 @@ format:
   pdf:
     documentclass: article
     papersize: letter
+    mainfont: Times New Roman
+    geometry:
+      - top=1in
+      - bottom=1in
+      - left=1.5in
+      - right=1.5in
+      - heightrounded
 author: Michael Schramm
 date: today
 #reference-doc: format.docx
@@ -32,6 +39,8 @@ library(survey)
 library(svyEffects)
 library(twriTemplates)
 library(kableExtra)
+library(patchwork)
+library(cowplot)
 
 ## if running in interactive, the store needs to be set to root directory
 if(interactive()) {
@@ -118,10 +127,10 @@ unweighted_demo |>
 ## Weighting
 
 Prior to analysis, individual survey responses were weighted so that 
-marginal proportions of the survey (`##r run_reference("tabdemo")`) matched 
+marginal proportions of the survey ([@tbl-demographics]) matched 
 national level benchmarks from the 5-year 2021 American Community Survey (ACS) 
 on sex/gender, age group, race/ethnicity, and education level 
-(`##r run_reference("tabweights")`). Weights on 
+([@tbl-weights]). Weights on 
 gender were developed by re-coding "female" and "other" responses as "non-male" 
 because the ACS only provides binary response options for sex. Using this approach,
 responses from both "female" and "other" respondents have the same marginal weight.
@@ -204,6 +213,11 @@ weighted_demo |>
   #select(!(Variable)) |> 
   rename(Characteristic = Value) |> 
   kableExtra::kbl(booktabs = T, linesep = "") |> 
+  kableExtra::column_spec(3, width = "4em") |>
+  kableExtra::column_spec(4, width = "4em") |>
+  kableExtra::column_spec(5, width = "3em") |>
+  kableExtra::column_spec(6, width = "3em") |>
+  kableExtra::column_spec(7, width = "3em") |>
   kableExtra::collapse_rows(columns = c(1,2),
                             latex_hline = "none",
                             row_group_label_position = "stack") |> 
@@ -287,7 +301,7 @@ tar_read(q16_19_tables, store = store) |>
   kableExtra::column_spec(2, width = "20em") |> 
   kableExtra::collapse_rows(columns = c(1,2),
                             latex_hline = "linespace") |> 
-  kableExtra::landscape()
+  kableExtra::kable_styling(latex_options = "scale_down") 
   # flextable() |>
   # merge_v(j = c("Question")) |>
   # hline(i = 4, j = c(1:3), part = "body") |>
@@ -306,7 +320,7 @@ tar_read(q16_19_tables, store = store) |>
 ```
 
 Most respondents had no knowledge (41.1%) or were unsure (47.4%) if 
-their community has been exposed to PFAS (`##r run_reference("tabq1819")`). 
+their community has been exposed to PFAS ([@tbl-q1819]). 
 Only 11.5% responded that they knew their community has been exposed to PFAS. 
 When asked to describe knowledge level about PFAS, 45.1% responded that they 
 have never heard of it and don't know what it is. An additional 31.6% responded 
@@ -334,7 +348,14 @@ q20_table <- tar_read(q16_19_tables, store = store) |>
   pivot_wider(names_from = Response,
               values_from = `Percent Response, SE`)
 
-kableExtra::kbl(q20_table)
+kableExtra::kbl(q20_table, booktabs = TRUE) |> 
+  kableExtra::column_spec(1, width = "15em") |> 
+  kableExtra::column_spec(2, width = "5em") |> 
+  kableExtra::column_spec(3, width = "5em") |> 
+  kableExtra::column_spec(4, width = "5em") |> 
+  kableExtra::column_spec(5, width = "5em") |> 
+  kableExtra::column_spec(6, width = "5em") |> 
+  kableExtra::kable_styling(latex_options = "scale_down")
 # flextable(q20_table) |> 
 #   style(pr_t = fp_text_default(font.size = 9), part = "body") |>
 #   style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
@@ -361,7 +382,7 @@ q19_summ
 
 On average, `r q19_summ$proportion[[1]]`% (minimum of 45% and maximum of 51.5%)
 of respondents were "not at all familiar" with potential sources of PFAS 
-included in the survey (`#r run_reference("tabq20")`). The probability of
+included in the survey ([@tbl-q20]). The probability of
 response decreased for increasing levels of familiarity across all potential 
 PFAS sources. Only `r q19_summ$proportion[[5]]`% (minimum of 5.9% and maximum of 
 8.3%) of respondents, on average across all sources, responded "extremely 
@@ -373,7 +394,7 @@ familiar."
 
 We did not find evidence for any association between Sex, Race/Ethnicity, 
 and Education with self-described knowledge about PFAS 
-(`#r run_reference("tabmodel1")`). We can't exclude potential Race/Ethnicity
+([@tbl-model1]). We can't exclude potential Race/Ethnicity
 sub-populations effects because Race/Ethnicity was collapsed into "White" and
 "Non-white" categories. For example, all the respondents identifying as "Native
 Hawaiian or Other Pacific Islander" (unweighted n = 3) responded that they had 
@@ -410,7 +431,7 @@ tbl_regression(m1,
                             Q16 ~ "Community PFAS Exposure"),
                tidy_fun = olr_tidy) |>
   add_significance_stars(hide_ci = FALSE, hide_p = FALSE) |> 
-  as_kable_extra()
+  as_kable_extra(booktabs = TRUE, linesep = "")
   # as_flex_table() |> 
   # style(pr_t = fp_text_default(font.size = 9), part = "body") |>
   # style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
@@ -426,7 +447,7 @@ tbl_regression(m1,
 
 
 There was not strong evidence for the influence of age on PFAS knowledge among
-most of the age brackets (`#r run_reference("tabmodel1")`). However, there is 
+most of the age brackets ([@tbl-model1]). However, there is 
 evidence to support that someone in the 35:44 age bracket will respond with a 
 higher self assessed knowledge level (OR = 1.63, p = 0.039) than someone in the 
 reference bracket (18:24). There is also strong evidence that people aware of 
@@ -440,14 +461,16 @@ level than those responding "No" (OR = 0.28, p < 0.001) or "Not sure"
 
 ```{r}
 #| label: fig-m1margins
-#| fig-height: 3
+#| fig-height: 5
 #| fig-width: 6.5
 #| fig-dpi: 300
 #| fig-cap: Average marginal predicted probabilities for self assessed knowledge of PFAS. Horizontal lines indicate the 95% confidence intervals of the marginal predicted probabilities.
 
 marginal_m1 <- tar_read(marginal_m1, store = store)
 
-p1 <- ggplot(marginal_m1$pred) +
+p1 <- marginal_m1$pred |> 
+  mutate(y = as_factor(str_replace(y, ",", ",\n"))) |> 
+  ggplot() +
   geom_pointrange(aes(y = y,
                       x = predicted,
                       xmin = conf.low,
@@ -470,6 +493,30 @@ p1 <- ggplot(marginal_m1$pred) +
         #                                  linewidth = 0),
         # legend.box.just = "right",
         legend.direction = "vertical",
+        legend.position = c(0.5,0.88),
+        legend.text = element_text(size = 8),
+        # legend.text.align = 1,
+        legend.title = element_text(size = 8),
+        # legend.title.align = 1,
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+
+
+p2 <- marginal_m1$diffs |> 
+  mutate(y = as_factor(str_replace(y, ",", ",\n"))) |> 
+  ggplot() +
+  geom_pointrange(aes(y = Q16, x = predicted,
+                      xmin = conf.low, xmax = conf.high),
+                  size = 0.25) +
+  facet_wrap(~forcats::fct_rev(y), ncol = 1) +
+  labs(x = "Difference in Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1),
+        # legend.background = element_rect(fill = alpha("black", 0.2),
+        #                                  linewidth = 0),
+        # legend.box.just = "right",
+        legend.direction = "vertical",
         legend.position = c(0.79,0.85),
         legend.text = element_text(size = 8),
         # legend.text.align = 1,
@@ -479,7 +526,7 @@ p1 <- ggplot(marginal_m1$pred) +
                                   hjust = 0,
                                   margin = margin(4.4, 4.4, 4.4, 40)))
 
-cowplot::ggdraw(align_legend(p1, hjust = 1))
+cowplot::ggdraw(align_legend(p1+p2, hjust = 1))
 
 ```
 
@@ -646,7 +693,7 @@ tbl_regression(m4,
                             Q16 ~ "Community PFAS Exposure",
                             Q6 ~ "Drinking Water Source")) |>
   add_significance_stars(hide_ci = FALSE, hide_p = FALSE) |>
-  as_kable_extra()
+  as_kable_extra(booktabs = TRUE, linesep = "")
   # as_flex_table() |>
   # style(pr_t = fp_text_default(font.size = 9), part = "body") |>
   # style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
@@ -659,7 +706,7 @@ tbl_regression(m4,
 
 There was not strong evidence that age, race, or education are predictive of
 an individual's awareness of PFAS contamination in their drinking water 
-(`#r run_reference("tabmodel4")`). For individuals identifying as other, the
+([@tbl-model4]). For individuals identifying as other, the
 odds of responding that they are aware their water is contaminated with PFAS was
 100% lower (OR = 0, p < 0.001) than individuals identifying male. There was 
 strong evidence for associations with both awareness of community PFAS exposure 
@@ -695,7 +742,7 @@ p1 <- ggplot(marginal_m5$pred) +
                   size = 0.25,
                   alpha = 0.75) +
   scale_color_viridis_d(guide = guide_legend(
-    title = "Awareness of\nDrinking Water Contamination",
+    title = "Awareness of Drinking\nWater Contamination",
     title.hjust = 1,
     label.hjust = 1,
     label.position = "left",
@@ -708,7 +755,7 @@ p1 <- ggplot(marginal_m5$pred) +
         #                                  linewidth = 0),
         # legend.box.just = "right",
         legend.direction = "vertical",
-        legend.position = c(0.79,0.20),
+        legend.position = c(0.73,0.20),
         legend.text = element_text(size = 8),
         # legend.text.align = 1,
         legend.title = element_text(size = 8),
@@ -717,8 +764,31 @@ p1 <- ggplot(marginal_m5$pred) +
                                   hjust = 0,
                                   margin = margin(4.4, 4.4, 4.4, 40)))
 
-cowplot::ggdraw(align_legend(p1, hjust = 1))
+#p1 <- cowplot::ggdraw(align_legend(p1, hjust = 1))
 
+p2 <- ggplot(marginal_m5$diffs) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  geom_pointrange(aes(y = y,
+                      x = predicted,
+                      xmin = conf.low,
+                      xmax = conf.high),
+                  size = 0.25) +
+  labs(x = "Difference in Probability\n(Yes-No Contrast)", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_blank(),
+        # legend.background = element_rect(fill = alpha("black", 0.2),
+        #                                  linewidth = 0),
+        # legend.box.just = "right",
+        legend.direction = "vertical",
+        legend.position = c(0.79,0.20),
+        legend.text = element_text(size = 8),
+        # legend.text.align = 1,
+        legend.title = element_text(size = 8),
+        # legend.title.align = 1,
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+cowplot::ggdraw(align_legend(p1 + p2, hjust = 1))
 
 ```
 
@@ -734,6 +804,11 @@ What is the ordinal prob of response that a respondent is concerned about PFAS i
 
 
 ```
+
+There was a strong association between awareness of drinking water being contaminated
+by PFAS and the level of concern about PFAS contamination in drinking water. There
+was a 27% difference between individuals
+that are and are not aware of PFAS contamination in their drinking water 
 
 
 # References

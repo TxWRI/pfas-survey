@@ -1,7 +1,7 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|c8c304cb6d86ccd5|||||||||||||||
+.Random.seed|object|ba9c4cbe51a79455|||||||||||||||
 coor_table|function|199810c90b58b9ab|||||||||||||||
-data_analysis_report|stem|0619b743bf838a52|532baa7d7d7c2461|525cafc7eabffa91|-38844089|quarto-docs/Data_Analysis.pdf*quarto-docs/Data_Analysis.qmd|t19509.923330238s|9e46584e97953bbf|1025007|file|local|vector|||34.51||
+data_analysis_report|stem|8c6f77bf1c560cc9|532baa7d7d7c2461|525cafc7eabffa91|-38844089|quarto-docs/Data_Analysis.pdf*quarto-docs/Data_Analysis.qmd|t19510.8982684858s|b0a364bc4a1552bf|1191100|file|local|vector|||34.14||
 fit_m1|function|7a6c892a71785d15|||||||||||||||
 fit_m2|function|4c55fe1e8d32a4cb|||||||||||||||
 fit_m3|function|916d96ccc145d25c|||||||||||||||
