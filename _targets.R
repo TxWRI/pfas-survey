@@ -108,6 +108,10 @@ list(
              table_q16_q19(pfas_analysis_data,
                            raked_weights)),
   
+  tar_target(q_20_table,
+             table_q20(pfas_analysis_data,
+                       raked_weights)),
+  
   ## Report
   tar_quarto(data_analysis_report, "quarto-docs/Data_Analysis.qmd",
             quiet = FALSE)

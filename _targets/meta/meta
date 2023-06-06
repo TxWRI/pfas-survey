@@ -1,7 +1,7 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|ba9c4cbe51a79455|||||||||||||||
+.Random.seed|object|a7a6d4fce0beebb4|||||||||||||||
 coor_table|function|199810c90b58b9ab|||||||||||||||
-data_analysis_report|stem|8c6f77bf1c560cc9|532baa7d7d7c2461|525cafc7eabffa91|-38844089|quarto-docs/Data_Analysis.pdf*quarto-docs/Data_Analysis.qmd|t19510.8982684858s|b0a364bc4a1552bf|1191100|file|local|vector|||34.14||
+data_analysis_report|stem|12f2f2338ff89a3d|160a612a52e7ab42|eb3086af468c5cf3|-38844089|quarto-docs/Data_Analysis.pdf*quarto-docs/Data_Analysis.qmd|t19514.6059350039s|81ef5140a56e1e1c|1128371|file|local|vector|||36.8||
 fit_m1|function|7a6c892a71785d15|||||||||||||||
 fit_m2|function|4c55fe1e8d32a4cb|||||||||||||||
 fit_m3|function|916d96ccc145d25c|||||||||||||||
@@ -33,6 +33,7 @@ prop_pums|function|3a5e1cfed8c34ea7|||||||||||||||
 prop_pums_to_list|function|74a6b2c01b9e7899|||||||||||||||
 proportions_pums|stem|a310128e78d2be3d|baff22e19220322f|c769e4caf376ca68|918884691||t19492.6774909813s|b768230cdbc96fc9|735|rds|local|vector|||1730.19||
 pums|stem|a28059ba516703b1|1aeb49e25444a44d|399211215a3e443d|358669220||t19487.8288450831s|3ca0d2c8636d7c94|89751595|rds|local|vector|||2254.3|package janitor was built under R version 4.2.3. package mice was built under R version 4.2.3. package tidyverse was built under R version 4.2.2. package ggplot2 was built under R version 4.2.3. package tibble was built under R version 4.2.3. package tidyr was built under R version 4.2.2. package readr was built under R version 4.2.2. package dplyr was built under R version 4.2.3. package stringr was built under R version 4.2.2. package forcats was built under R version 4.2.2. package lubridate was built under R version 4.2.2. package tidycensus was built under R version 4.2.3. package srvyr was built under R version 4.2.3|
+q_20_table|stem|a04db31a57384a47|a5b3756777b8061a|5267f860be492ff6|-4930913||t19513.6852877551s|6830b6b804b0a566|1620|rds|local|vector|||1.13||
 q16_18_tables|stem|79e3c661b7b4931f|e9e682c3a1250363|6aaa97ca37c745bc|1346753191||t19490.7058752797s|1416663ce6eb40fb|1821|rds|local|vector|||1.28||
 q16_19_tables|stem|c191a5bacd4ecfce|e9e682c3a1250363|4d47127fdbda08df|1995229174||t19509.8178628859s|a69d4596f1dbdb95|2413|rds|local|vector|||1.42||
 rake|function|c5b2bd011b001702|||||||||||||||
@@ -40,5 +41,6 @@ raked_weights|stem|0606b6882ad70e23|7fcaf86ccbb3f7fa|dbf7c725bd35b09a|1400866253
 read_pfas_survey|function|74a24ef5d85ad622|||||||||||||||
 recode_pums|function|54580698790435d7|||||||||||||||
 table_q16_q19|function|14a17e5148973990|||||||||||||||
+table_q20|function|763abff185506032|||||||||||||||
 target_prop_list|stem|8a0531e2cb743204|c1d15225697903bd|11189655d6430138|471146281||t19492.6774914273s|78255450da878a2f|453|rds|local|vector|||0||
 weight_coefficients|stem|c0228ad54f7b291e|0d9efb012abe8092|cec056a3eb9f0dcc|1629522478||t19491.7572306147s||5934|rds|local|vector|||0.08||error in evaluating the argument x in selecting a method for function t nonnumeric argument to binary operator

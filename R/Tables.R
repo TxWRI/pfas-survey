@@ -156,3 +156,116 @@ table_q16_q19 <- function(df, weights) {
             )
 
 }
+
+
+
+## responses to q20
+table_q20 <- function(df, weights) {
+  
+  df <- df |> 
+    select(Q20_1, Q20_2, Q20_3, Q20_4,
+           Q20_5, Q20_6, Q20_7, Q20_8, Q20_9, 
+           Q20_10, Q20_11, Q20_12, Q20_13)
+  df$weights <- weights$weightvec
+  
+  survey_design <- df |>
+    as_survey_design(weights = weights)
+  
+  q_20_1_results <- survey_design |> 
+    select(Q20_1) |> 
+    group_by(Q20_1) |> 
+    summarise(proportion = survey_mean(vartype = "se")) |> 
+    rename(Response = Q20_1) |> 
+    mutate(Question = "Drinking Water")
+  
+  q_20_2_results <- survey_design |>
+    select(Q20_2) |>
+    group_by(Q20_2) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_2) |> 
+    mutate(Question = "Public waterways near waste disposal sites")
+  
+  q_20_3_results <- survey_design |>
+    select(Q20_3) |>
+    group_by(Q20_3) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_3) |> 
+    mutate(Question = "Soils near waste disposal sites")
+  
+  q_20_4_results <- survey_design |>
+    select(Q20_4) |>
+    group_by(Q20_4) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_4) |> 
+    mutate(Question = "Dairy products")
+  
+  q_20_5_results <- survey_design |>
+    select(Q20_5) |>
+    group_by(Q20_5) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_5) |> 
+    mutate(Question = "Fresh produce")
+  
+  q_20_6_results <- survey_design |>
+    select(Q20_6) |>
+    group_by(Q20_6) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_6) |> 
+    mutate(Question = "Freshwater fish")
+  
+  q_20_7_results <- survey_design |>
+    select(Q20_7) |>
+    group_by(Q20_7) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_7) |> 
+    mutate(Question = "Seafood")
+  
+  q_20_8_results <- survey_design |>
+    select(Q20_8) |>
+    group_by(Q20_8) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_8) |> 
+    mutate(Question = "Food packaging")
+  
+  q_20_9_results <- survey_design |>
+    select(Q20_9) |>
+    group_by(Q20_9) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_9) |>
+    mutate(Question = "Non-stick cookware")
+  
+  q_20_10_results <- survey_design |>
+    select(Q20_10) |>
+    group_by(Q20_10) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_10) |> 
+    mutate(Question = "Personal hygiene products")
+  
+  q_20_11_results <- survey_design |>
+    select(Q20_11) |>
+    group_by(Q20_11) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_11) |> 
+    mutate(Question = "Household products (fabrics, cleaning products, paints and sealants)") 
+  
+  q_20_12_results <- survey_design |>
+    select(Q20_12) |>
+    group_by(Q20_12) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_12) |> 
+    mutate(Question = "Fire extinguising foam")
+  
+  q_20_13_results <- survey_design |>
+    select(Q20_13) |>
+    group_by(Q20_13) |>
+    summarise(proportion = survey_mean(vartype = "se")) |>
+    rename(Response = Q20_13) |> 
+    mutate(Question = "Fertilizers from wastewater plants")
+  
+  bind_rows(q_20_1_results,
+            q_20_2_results, q_20_3_results, q_20_4_results,
+            q_20_5_results, q_20_6_results, q_20_7_results,
+            q_20_8_results, q_20_9_results, q_20_10_results,
+            q_20_11_results, q_20_12_results, q_20_13_results
+  )
+}
