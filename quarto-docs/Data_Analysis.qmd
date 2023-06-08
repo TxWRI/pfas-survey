@@ -11,6 +11,7 @@ format:
       - left=1.5in
       - right=1.5in
       - heightrounded
+    extract-media: figs
 author: Michael Schramm
 date: today
 #reference-doc: format.docx
