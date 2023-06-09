@@ -1,0 +1,63 @@
+---
+title: "PFAS Public Survey"
+output: github_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(survey)
+```
+
+This is the data and code repository for the PFAS Public Survey study. 
+
+Berthold, A., McCrary A., deVilleneuve, S., Schramm, M. Pending.
+
+
+This project uses the [renv](https://rstudio.github.io/renv/) and [targets](https://docs.ropensci.org/targets/) R packages to facilitate reproducibility. Once the project is downloaded and
+opened in RStudio install the renv package:
+
+```{r install, eval=FALSE}
+install.packages("renv")
+```
+
+The packages and package versions used in the project can be installed and restored using:
+```{r restore, eval=FALSE}
+renv::restore()
+```
+
+To reproduce the analysis you will need a Census API key which can be obtained from https://api.census.gov/data/key_signup.html. Then use targets to rerun the analysis. This will take a little while to run:
+```{r make, eval=FALSE}
+tidycensus::census_api_key("API KEY GOES HERE")
+targets::tar_make()
+```
+
+Survey responses used in our analysis are obtained with:
+
+```{r data}
+targets::tar_read(pfas_analysis_data)
+```
+
+Five models were fit in the analysis:
+
+`m1`: Proportional odds model relating self-described knowledge about PFAS to demographic indicators and community PFAS exposure.
+
+`m2`: Summary of 13 proportional odds models relating familiarity of 13 items with potential for PFAS contamination with demographic indicators and community PFAS exposure.
+
+`m3`: Summary of 13 proportional odds models relating intention to change 13 items with potential for PFAS contamination with demographic indicators and community PFAS exposure.
+
+`m4`: Logistic regression relating awareness of PFAS contamintion in drinking water with demographics, community PFAS exposure, and drinking water soruces.
+
+`m5`: Proportional odds model relating levels of concern about PFAS in drinking water with demographics, drinking water sources, and awareness of drinking water contamination.
+
+Model results can be obtained as follows:
+
+```{r m1}
+targets::tar_read(m1) |> summary()
+```
+
+`m1` and `m2` require some tidying:
+```{r m2}
+## each model is a row 1:13:
+targets::tar_read(m2)$m[[1]] |> summary()
+```
+
