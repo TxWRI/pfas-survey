@@ -1,0 +1,924 @@
+---
+title: "PFAS Survey Data Analysis"
+format: 
+  pdf:
+    documentclass: article
+    papersize: letter
+    mainfont: Times New Roman
+    geometry:
+      - top=1in
+      - bottom=1in
+      - left=1.5in
+      - right=1.5in
+      - heightrounded
+    extract-media: figs
+author: Michael Schramm
+date: today
+#reference-doc: format.docx
+bibliography: bibliography.yaml
+csl: https://www.zotero.org/styles/council-of-science-editors-author-date?source=1
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+
+
+
+knitr::opts_chunk$set(echo = FALSE,
+                      dev = "ragg_png",
+                      dpi = 300)
+options(tidyverse.quiet = TRUE)
+library(targets)
+library(tidyverse)
+library(anesrake)
+library(flextable)
+library(gtsummary)
+library(officedown)
+library(officer)
+library(survey)
+library(svyEffects)
+library(twriTemplates)
+library(kableExtra)
+library(patchwork)
+library(cowplot)
+
+## if running in interactive, the store needs to be set to root directory
+if(interactive()) {
+  store = paste0("../", tar_path_store())
+} else {
+  store = tar_path_store()
+}
+
+
+# align legend function from claus wilke
+# https://stackoverflow.com/questions/48000292/center-align-legend-title-and-legend-keys-in-ggplot2-for-long-legend-titles
+align_legend <- function(p, hjust = 0.5)
+{
+  # extract legend
+  g <- cowplot::plot_to_gtable(p)
+  grobs <- g$grobs
+  legend_index <- which(sapply(grobs, function(x) x$name) == "guide-box")
+  legend <- grobs[[legend_index]]
+
+  # extract guides table
+  guides_index <- which(sapply(legend$grobs, function(x) x$name) == "layout")
+
+  # there can be multiple guides within one legend box  
+  for (gi in guides_index) {
+    guides <- legend$grobs[[gi]]
+
+    # add extra column for spacing
+    # guides$width[5] is the extra spacing from the end of the legend text
+    # to the end of the legend title. If we instead distribute it by `hjust:(1-hjust)` on
+    # both sides, we get an aligned legend
+    spacing <- guides$width[5]
+    guides <- gtable::gtable_add_cols(guides, hjust*spacing, 1)
+    guides$widths[6] <- (1-hjust)*spacing
+    title_index <- guides$layout$name == "title"
+    guides$layout$l[title_index] <- 2
+
+    # reconstruct guides and write back
+    legend$grobs[[gi]] <- guides
+  }
+
+  # reconstruct legend and write back
+  g$grobs[[legend_index]] <- legend
+  g
+}
+
+```
+
+
+
+# Survey Demographic Profile
+
+```{r}
+#| label: tbl-demographics
+#| tbl-cap: Demographic profile (unadjusted) of survey respondents.
+
+unweighted_demo <- tar_read(pfas_analysis_data, store = store)
+unweighted_demo |> 
+  select(`Sex/Gender` = SEX,
+         `Age` = AGEP,
+         `Race/Ethnicity` = RACE5,
+         `Educational` = SCHL) |> 
+  mutate(Age = forcats::fct_na_value_to_level(Age, level = "No answer"),
+         `Race/Ethnicity` = forcats::fct_na_value_to_level(`Race/Ethnicity`, level = "No answer"),
+         Educational = forcats::fct_na_value_to_level(Educational, level = "No answer")) |> 
+  tbl_summary(include = c(`Sex/Gender`, `Age`, `Race/Ethnicity`, `Educational`)) |>
+  as_kable_extra(booktabs = TRUE, linesep = "") |> 
+  kableExtra::kable_styling(latex_options = c("hold_position"))
+  # as_flex_table() |>
+  # style(pr_t = fp_text_default(font.size = 9), part = "body") |>
+  # style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |> 
+  # hline(i = 5, j = c(1:2), part = "body") |>
+  # hline(i = 13, j = c(1:2), part = "body") |>
+  # hline(i = 23, j = c(1:2), part = "body") |> 
+  # set_table_properties(layout = "autofit") |> 
+  # padding(padding.top = 0, padding.bottom = 0, part = "body") |> 
+  # set_caption(caption = "Demographic profile (unadjusted) of survey respondents.",
+  #             autonum = run_autonum(seq_id = "tab", bkm = "tabdemo"))
+```
+
+
+
+# Data Analysis
+
+## Weighting
+
+Prior to analysis, individual survey responses were weighted so that 
+marginal proportions of the survey ([@tbl-demographics]) matched 
+national level benchmarks from the 5-year 2021 American Community Survey (ACS) 
+on sex/gender, age group, race/ethnicity, and education level 
+([@tbl-weights]). Weights on 
+gender were developed by re-coding "female" and "other" responses as "non-male" 
+because the ACS only provides binary response options for sex. Using this approach,
+responses from both "female" and "other" respondents have the same marginal weight.
+@kennedyUsingSexGender2022 provide substantial discussion on the treatment of 
+sex and gender in survey adjustment. Due to small subpopulation sample sizes
+within the Race/Ethnicity variable, Race/Ethnicity were recoded as 
+White or Caucasian and Non-white categories. Weights were 
+developed by poststratification raking using the American National Election 
+Study (ANES) weighting algorithm implemented in the *anesrake* R package 
+[@debellComputingWeightsAmerican2009; @pasekAnesrakeANESRaking2018].
+
+```{r}
+#| label: tbl-weights
+#| tbl-cap: Marginal survey and target population proportions and marginal weighted values.
+unweighted_demo <- tar_read(pfas_analysis_data, store = store)
+unweighted_demo <- unweighted_demo |> 
+  select(`Sex/Gender` = SEX_NM,
+         `Age` = AGEP,
+         `Race/Ethnicity` = RACE2,
+         `Education` = SCHL) |> 
+  mutate(`Sex/Gender` = forcats::fct_na_value_to_level(`Sex/Gender`, level = "No answer"),
+         Age = forcats::fct_na_value_to_level(Age, level = "No answer"),
+         `Race/Ethnicity` = forcats::fct_na_value_to_level(`Race/Ethnicity`, level = "No answer"),
+         Education = forcats::fct_na_value_to_level(Education, level = "No answer")) |>
+  tbl_summary(include = c(`Sex/Gender`, `Age`, `Race/Ethnicity`, `Education`),
+              statistic = list(all_categorical() ~"{n}")) |>
+  as_tibble() |>
+  rename(`Unweighted N` = "**N = 1,100**",
+         Value = "**Characteristic**") |>
+  filter(!is.na(`Unweighted N`)) |>
+  mutate(`Variable` = c(rep("Sex/Gender",3),
+                        rep("Age", 7),
+                        rep("Race/Ethnicity", 3),
+                        rep("Education", 8)),
+         `Unweighted N` = as.integer(`Unweighted N`)) |>
+  group_by(Variable) |>
+  mutate(`Unweighted %` = round(`Unweighted N` / sum(`Unweighted N`) * 100, 1)) |>
+  select(Variable, Value, `Unweighted N`, `Unweighted %`)
+
+
+weighted_demo <- tar_read(raked_weights, store = store) |>
+  summary()
+
+
+
+df <- tibble(
+  demographic_indicators = list(`Sex` = as_tibble(weighted_demo$rk_SEX_NM,
+                                                  rownames = "value") |>
+                                  mutate(`Variable` = "Sex/Gender"),
+                                `Race/Ethnicity` = as_tibble(weighted_demo$rk_RACE2,
+                                                             rownames = "value") |>
+                                  mutate(`Variable` = "Race/Ethnicity"),
+                                `Age` = as_tibble(weighted_demo$rk_AGEP,
+                                                  rownames = "value") |>
+                                  mutate(`Variable` = "Age"),
+                                `Education` = as_tibble(weighted_demo$rk_SCHL,
+                                                        rownames = "value") |>
+                                  mutate(`Variable` = "Education"))
+)
+weighted_demo <- df |>
+  unnest(cols = c(demographic_indicators)) |>
+  select(`Variable`, value, Target, `Wtd N`, `Wtd %`) |>
+  filter(value != "Total") |>
+  rename(Value = value) |>
+  mutate(Target = round(Target * 100, 1),
+         `Wtd N` = round(`Wtd N`, 1),
+         `Wtd %` = round(`Wtd %` * 100, 1)) |>
+  rename(`Target %` = Target,
+         `Weighted N` = `Wtd N`,
+         `Weighted %` = `Wtd %`)
+
+
+
+weighted_demo <- unweighted_demo |>
+  left_join(weighted_demo, by = c("Variable" = "Variable",
+                                  "Value" = "Value")) |> 
+  arrange(Variable)
+
+weighted_demo |> 
+  #select(!(Variable)) |> 
+  rename(Characteristic = Value) |> 
+  kableExtra::kbl(booktabs = T, linesep = "") |> 
+  kableExtra::column_spec(3, width = "4em") |>
+  kableExtra::column_spec(4, width = "4em") |>
+  kableExtra::column_spec(5, width = "3em") |>
+  kableExtra::column_spec(6, width = "3em") |>
+  kableExtra::column_spec(7, width = "3em") |>
+  kableExtra::collapse_rows(columns = c(1,2),
+                            latex_hline = "none",
+                            row_group_label_position = "stack") |> 
+  kableExtra::kable_styling(latex_options = "scale_down")
+  #kableExtra::pack_rows(index = table(weighted_demo$Variable))
+  # flextable() |>
+  # merge_v(j = c("Variable")) |>
+  # colformat_double(digits = 1) |>
+  # hline(i = 3, j = c(2:7), part = "body") |>
+  # hline(i = 10, j = c(2:7), part = "body") |>
+  # hline(i = 13, j = c(2:7), part = "body") |>
+  # style(pr_t = fp_text_default(font.size = 9), part = "body") |>
+  # style(pr_t = fp_text_default(font.size = 9, bold = TRUE), part = "header") |>
+  # set_table_properties(layout = "autofit") |>
+  # padding(padding.top = 0, padding.bottom = 0, part = "body") |>
+  # set_caption(caption = "Marginal survey and target population proportions and marginal weighted values.",
+  #             autonum = run_autonum(seq_id = "tab", bkm = "tabweights"))
+```
+
+
+## Models
+
+To explore factors associated with an individual's understanding of PFAS two
+different proportional odds models [@agrestiCategoricalDataAnalysis2002] were developed
+relating (1) self-described knowledge of PFAS (4 responses ranging from 
+"I've never heard of it, and don't know what it is" to "I'm confident I know 
+what it is"); and (2) awareness of potential sources of PFAS (5 responses ranging 
+from "Not at all familiar" to "Extremely Familiar" to Sex/Gender, Age,
+Race/Ethnicity, Education, and awareness of community exposure to PFAS (Yes, No, 
+Not Sure). To explore factors associated with intended behavior change, a proportional
+odds model was developed relating intention to change
+use of items associated with PFAS (5 responses ranging from "will never change"
+to "have already changed") to the same dependent variables.
+
+The probability that an individual was aware of PFAS impacting their drinking water
+was also explored. A logistic regression model was developed to relate awareness
+of PFAS contamination in drinking water (a binary yes or no response) to Sex/Gender, Age,
+Race/Ethnicity, Education, and awareness of community exposure to PFAS, and 
+drinking water source (filtered tap water, unfiltered tap water, bottled water, other).
+The last model evaluated the factors associated with an individuals level of 
+concern about PFAS in their drinking water specifically. A proportional odds model
+fit level of concern (5 responses ranging from "Not at all concerned" to 
+"Extremely concerned") to Sex/Gender, Age,
+Race/Ethnicity, Education, drinking water source, and awareness of PFAS
+contamination in drinking water.
+
+Model results are presented as odds-ratios (with approximate p-values calculated
+by comparing the t-value against the standard normal distribution). Marginal 
+effects are also presented as population-level predicted probabilities for a given
+predictor estimated using observed values [@hanmerCurveClarifyingBest2013]. 
+95% confidence intervals were derived using a parametric bootstrap as 
+implemented in the *svyEffects* R package [@santosSvyEffectsSimulationBasedMarginal2023].
+All models were fit using the *survey* package in R version 4.2.1
+[@lumleyAnalysisComplexSurvey2004; @rcoreteamLanguageEnvironmentStatistical2022].
+
+
+# Results
+
+
+```{r}
+#| label: tbl-q1819
+#| tbl-cap: Summary of weighted survey responses to questions about self-assessed PFAS knowledge, awareness of community exposure, sources of drinking water, awareness of drinking water contamination, and concern about drinking water contamination.
+#| results: asis
+
+tar_read(q16_19_tables, store = store) |> 
+  select(Question, Response, proportion, proportion_se) |>
+  filter(Question == "To your knowledge, has your community been exposed to PFAS?" |
+           Question == "How would you describe your knowledge about PFAS as an environmental contaminant?" |
+           Question == "What is your main source of drinking water?" |
+           Question == "To your knowledge, has your primary source of drinking water been impacted by PFAS?"|
+           Question == "How concerned are you about PFAS in your drinking water?") |>
+  mutate(`Percent Response, SE` = case_when(
+    is.na(proportion) ~ NA,
+    .default = paste0(
+      sprintf("%.1f", round(proportion * 100, 1)), " (",
+      sprintf("%.1f", round(proportion_se * 100, 1)), ")"))) |>
+  select(-c(proportion, proportion_se)) |>
+  kableExtra::kbl(booktabs = T, linesep = "", escape = FALSE,
+                  format = "latex") |> 
+  kableExtra::column_spec(1, width = "20em") |> 
+  kableExtra::column_spec(2, width = "20em") |> 
+  kableExtra::collapse_rows(columns = c(1,2),
+                            latex_hline = "linespace") |> 
+  kableExtra::kable_styling(latex_options = "scale_down") 
+
+```
+
+Most respondents had no knowledge (41.1%) or were unsure (47.4%) if 
+their community has been exposed to PFAS ([@tbl-q1819]). 
+Only 11.5% responded that they knew their community has been exposed to PFAS. 
+When asked to describe knowledge level about PFAS, 45.1% responded that they 
+have never heard of it and don't know what it is. An additional 31.6% responded 
+they have heard of PFAS, but don't know what PFAS are. Most individuals said
+they use unfiltered (27.9%) or filtered (37.6%) tap water as their main source 
+of drinking water. An large majority of people responded that, to their 
+knowledge, their drinking water had not been impacted by PFAS (97.4%). When asked
+about their level of concern about PFAS in drinking water, 23.1% had no concerns,
+17.8% and 24.3% were slightly or moderately concerned. Fewer people responded 
+that they were extremely concerned (15.7%) or very concerned (19.1%) about PFAS 
+in their drinking water.
+
+
+```{r}
+#| label: tbl-q19
+#| tbl-cap: Summary of weighted responses to questions about awareness of different potential sources of PFAS.
+q19_table <- tar_read(q16_19_tables, store = store) |> 
+  select(Question, Response, proportion, proportion_se) |>
+  filter(Question != "To your knowledge, has your community been exposed to PFAS?" &
+           Question != "How would you describe your knowledge about PFAS as an environmental contaminant?" &
+           Question != "What percentage of the U.S. population do you think has been exposed to PFAS?" &
+           Question != "What is your main source of drinking water?" &
+           Question != "To your knowledge, has your primary source of drinking water been impacted by PFAS?" &
+           Question != "How concerned are you about PFAS in your drinking water?") |> 
+  mutate(`Percent Response, SE` = case_when(
+    is.na(proportion) ~ NA,
+    .default = paste0(
+      sprintf("%.1f", round(proportion,3) * 100), "% (",
+      sprintf("%.1f", round(proportion_se, 3) * 100), ")"))) |> 
+  select(-c(proportion, proportion_se)) |> 
+  pivot_wider(names_from = Response,
+              values_from = `Percent Response, SE`)
+
+kableExtra::kbl(q19_table, booktabs = TRUE) |> 
+  kableExtra::column_spec(1, width = "15em") |> 
+  kableExtra::column_spec(2, width = "5em") |> 
+  kableExtra::column_spec(3, width = "5em") |> 
+  kableExtra::column_spec(4, width = "5em") |> 
+  kableExtra::column_spec(5, width = "5em") |> 
+  kableExtra::column_spec(6, width = "5em") |> 
+  kableExtra::kable_styling(latex_options = "scale_down")
+
+```
+
+```{r}
+#| echo: false
+#| output: false
+q19_summ <- tar_read(q16_19_tables, store = store) |> 
+  select(Question, Response, proportion, proportion_se) |>
+  filter(Question != "To your knowledge, has your community been exposed to PFAS?" &
+           Question != "How would you describe your knowledge about PFAS as an environmental contaminant?" &
+           Question != "What percentage of the U.S. population do you think has been exposed to PFAS?" &
+           Question != "What is your main source of drinking water?" &
+           Question != "To your knowledge, has your primary source of drinking water been impacted by PFAS?" &
+           Question != "How concerned are you about PFAS in your drinking water?") |> 
+  group_by(Response) |>
+  summarise(mean = round(mean(proportion)*100,1),
+            se = round((sd(proportion)/sqrt(length(proportion))*100), 1))
+q19_summ
+```
+
+
+On average, `r q19_summ$mean[[1]]`% (SE = `r q19_summ$se[[1]]`%)
+of respondents were "not at all familiar" with potential sources of PFAS 
+included in the survey ([@tbl-q19]). The probability of
+response decreased for increasing levels of familiarity across all potential 
+PFAS sources with only `r q19_summ$mean[[5]]`% (SE = `r q19_summ$se[[5]]`%) of 
+respondents, on average across all sources, responded "extremely 
+familiar." 
+
+
+
+```{r}
+#| label: tbl-q20
+#| tbl-cap: Summary of weighted responses rating intention to change products because of potential for PFAS contamination.
+q20_table <- tar_read(q_20_table, store = store) |> 
+  mutate(`Percent Response, SE` = case_when(
+    is.na(proportion) ~ NA,
+    .default = paste0(
+      sprintf("%.1f", round(proportion,3) * 100), "% (",
+      sprintf("%.1f", round(proportion_se, 3) * 100),
+      ")"))) |> 
+  select(-c(proportion, proportion_se)) |> 
+  pivot_wider(names_from = Response,
+              values_from = `Percent Response, SE`)
+
+kableExtra::kbl(q20_table, booktabs = TRUE) |> 
+  kableExtra::column_spec(1, width = "15em") |> 
+  kableExtra::column_spec(2, width = "5em") |> 
+  kableExtra::column_spec(3, width = "5em") |> 
+  kableExtra::column_spec(4, width = "5em") |> 
+  kableExtra::column_spec(5, width = "5em") |> 
+  kableExtra::column_spec(6, width = "5em") |> 
+  kableExtra::kable_styling(latex_options = "scale_down")
+
+
+```
+
+
+```{r}
+#| echo: false
+#| output: false
+q20_summ <- tar_read(q_20_table, store = store) |> 
+  select(Question, Response, proportion, proportion_se) |>
+  group_by(Response) |>
+  summarise(mean = round(mean(proportion)*100,1),
+            se = round((sd(proportion)/sqrt(length(proportion))*100), 1))
+q20_summ
+```
+
+
+Individual intention to change product usage due to PFAS contamination 
+was less certain. Across all items, most individuals responded "Not sure" 
+(Mean = `r q20_summ$mean[[2]]`%, SE = `r q20_summ$se[[2]]`%) or "Might change" 
+(Mean = `r q20_summ$mean[[3]]`%, SE = `r q20_summ$se[[3]]`%; [@tbl-q20]). While
+the mean response rate across product categories for individuals that have already
+changed product use was only `r q20_summ$mean[[5]]`% (SE = `r q20_summ$se[[5]]`%),
+the drinking water item stood out with 18.9% (SE = 1.3%) of respondents 
+indicating they have already changed use of drinking water.
+
+## General PFAS Awareness and Intent to Change Product Use
+
+
+
+We did not find evidence for any association between sex, race/ethnicity, 
+or education with self-described knowledge about PFAS 
+([@tbl-model1]). We can't exclude potential Race/Ethnicity
+sub-populations effects because Race/Ethnicity was collapsed into "White" and
+"Non-white" categories. For example, all the respondents identifying as "Native
+Hawaiian or Other Pacific Islander" (unweighted n = 3) responded that they had 
+never heard of or knew what PFAS were. Some sub-populations might be more likely
+to answer that they have less knowledge about PFAS. With the sample size used in
+the current study we were not able to incorporate the sub-populations and develop
+a model that would converge.
+
+
+
+```{r}
+#| label: tbl-model1
+#| tbl-cap: Odds ratios, confidence intervals, and approximate p-values from (Model 1) a proportional odds model relating predictors to self described knowledge levels about PFAS; (Model 2) a logistic regression model relating predictors to awareness of drinking water being contaminated by PFAS; and (Model 3) a proportional odds model relating predictors to levels of concern about PFAS in drinking water.
+m1 <- targets::tar_read(m1, store = store)
+
+
+
+olr_tidy <- function(x, ...) {
+  broom::tidy(x, ...) %>%
+    dplyr::mutate(
+      p.value =
+        pnorm(abs(statistic), lower.tail = FALSE) * 2
+    )
+}
+
+
+
+m1 <- tbl_regression(m1,
+               exponentiate = TRUE,
+               label = list(SEX ~ "Sex",
+                            AGEP ~ "Age",
+                            RACE2 ~ "Race/Ethnicity",
+                            SCHL ~ "Education",
+                            Q16 ~ "Community PFAS Exposure"),
+               tidy_fun = olr_tidy) |>
+  add_significance_stars(hide_ci = FALSE, hide_se = TRUE, hide_p = FALSE)
+
+
+m4 <- targets::tar_read(m4, store = store)
+
+m4 <- tbl_regression(m4,
+               exponentiate = TRUE,
+               label = list(SEX ~ "Sex",
+                            AGEP ~ "Age",
+                            RACE2 ~ "Race/Ethnicity",
+                            SCHL ~ "Education",
+                            Q16 ~ "Community PFAS Exposure",
+                            Q6 ~ "Drinking Water Source")) |>
+  add_significance_stars(hide_ci = FALSE, hide_se = TRUE, hide_p = FALSE) #|>
+  # as_kable_extra(booktabs = TRUE, linesep = "")
+
+m5 <- targets::tar_read(m5, store = store)
+
+m5 <- tbl_regression(m5,
+                     exponentiate = TRUE,
+                     label = list(SEX ~ "Sex",
+                                  AGEP ~ "Age",
+                                  RACE2 ~ "Race/Ethnicity",
+                                  SCHL ~ "Education",
+                                  Q6 ~ "Drinking Water Source",
+                                  Q9_6 ~ "Drinking water contaminated by PFAS"),
+                     tidy_fun = olr_tidy) |>
+  add_significance_stars(hide_ci = FALSE, hide_se = TRUE, hide_p = FALSE)
+
+
+tbl_merge(tbls = list(m1, m4, m5), 
+          tab_spanner = c("Model 1: Knowledge\nlevel of PFAS",
+                          "Model 2: Knowledge of\ndrinking water contamination",
+                          "Model 3: Level of\nconcern")) |> 
+  as_kable_extra(booktabs = TRUE, linesep = "") |> 
+  kable_styling(font_size = 8) |> 
+  landscape()
+
+
+
+```
+
+
+
+
+There was not strong evidence for the influence of age on PFAS knowledge among
+most of the age brackets ([@tbl-model1]). However, there is 
+evidence to support that individuals in the 35:44 age bracket will respond with a 
+higher self assessed knowledge level (OR = 1.63, p = 0.039) than someone in the 
+reference bracket (18:24). There is also strong evidence that people aware of 
+PFAS exposure in their communities self-report higher levels of knowledge about 
+PFAS. People aware of PFAS exposure in their communities are 3.57 times 
+and 4.35 times  more likely to respond with a higher self-assessed knowledge 
+level than those responding "No" (OR = 0.28, p < 0.001) or "Not sure" 
+(OR = 0.23, p < 0.001) to awareness of PFAS contamination in their communities.
+
+
+
+```{r}
+#| label: fig-m1margins
+#| fig-width: 6.5
+#| fig-height: 3
+#| fig-dpi: 300
+#| fig-cap: Average marginal predicted probabilities (left) and contrasts in probabilities (right) for self assessed knowledge of PFAS based on an individual's awareness of community PFAS exposure. Horizontal lines indicate the 95% confidence intervals of the marginal predicted probabilities and contrasts in marginal predicted probabilities.
+
+marginal_m1 <- tar_read(marginal_m1, store = store)
+
+p1 <- marginal_m1$pred |>
+  mutate(y = as_factor(str_replace(y, ",", ",\n"))) |>
+  ggplot() +
+  geom_pointrange(aes(y = y,
+                      x = predicted,
+                      xmin = conf.low,
+                      xmax = conf.high,
+                      color = Q16),
+                  position = position_dodge(0.25),
+                  size = 0.25,
+                  alpha = 0.75) +
+  scale_color_viridis_d(guide = guide_legend(
+    title = "Community PFAS Exposure",
+    title.hjust = 1,
+    label.hjust = 1,
+    label.position = "left",
+    reverse = TRUE
+  )) +
+  labs(x = "Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1),
+        legend.box.just = "right",
+        legend.direction = "vertical",
+        legend.position = c(0.57,0.88),
+        legend.text = element_text(size = 8),
+        legend.text.align = 1,
+        legend.title = element_text(size = 8),
+        legend.title.align = 1,
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+
+
+p2 <- marginal_m1$diffs |>
+  mutate(y = as_factor(str_replace(y, ",", ",\n"))) |>
+  ggplot() +
+  geom_vline(xintercept = 0, linetype = 2) +
+  geom_pointrange(aes(y = y, x = predicted,
+                      xmin = conf.low, xmax = conf.high,
+                      color = Q16),
+                  size = 0.25,
+                  alpha = 0.75,
+                  position = position_dodge(0.25)) +
+  scale_color_viridis_d(guide = guide_legend(
+    title = "Contrasts",
+    title.hjust = 1,
+    label.hjust = 1,
+    label.position = "left",
+    reverse = TRUE
+  )) +
+  labs(x = "Difference in Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_blank(),
+        # legend.background = element_rect(fill = alpha("black", 0.2),
+        #                                  linewidth = 0),
+        # legend.box.just = "right",
+        legend.direction = "vertical",
+        legend.position = c(0.76,0.88),
+        legend.text = element_text(size = 8),
+        # legend.text.align = 1,
+        legend.title = element_text(size = 8),
+        # legend.title.align = 1,
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)),
+        strip.background = element_rect(fill = "white")
+  )
+
+
+p3 <- cowplot::plot_grid(align_legend(p1, hjust = 1),
+                   p2,
+                   rel_widths = c(1.65, 1))
+p3
+ragg::agg_tiff("figures/fig-1.tiff", width = 6.5, height = 3, units = "in", 
+               res = 300, compression = "lzw")
+p3
+dev.off()
+```
+
+```{r}
+#| echo: false
+#| output: false
+m1_diffs <- marginal_m1$diffs |> 
+  mutate(predicted = paste0(
+    sprintf("%.1f", round(predicted*100,1)),
+    "%"))
+m1_diffs
+```
+
+There was no difference in marginal predicted response probabilities between
+people that were unsure if there community had been exposed to PFAS or said
+their community had not been exposed to PFAS for responses to self-assessed 
+knowledge about PFAS ([@fig-m1margins]). People that were aware that their
+community had been exposed to PFAS had 10.8% to 11.6% higher probability of
+responding they were confident of their knowledge of PFAS compared to the
+remaining groups. They also had a 15.8% to 17.9% higher probability of responding
+they thought that they knew what PFAS was compared to the remaining groups. 
+Conversely, someone that is aware of community PFAS
+exposure was much less likely to respond that they had never heard of PFAS and
+didn't know what is was  (`r round(marginal_m1$preds$predicted[[1]],2)*100`%) 
+compared to those that said their community hasn't been exposed 
+(`r round(marginal_m1$preds$predicted[[5]],2)*100`%) or don't know 
+(`r round(marginal_m1$preds$predicted[[9]],2)*100`%). We infer that respondents that
+are aware of community PFAS exposure are most likely to respond that they have
+at least heard of PFAS, but they may or may not be aware of what PFAS's are.
+Respondents that are unaware or uncertain of community PFAS exposure are most
+likley to have never heard of it, and if they have they don't know what it is.
+
+
+
+```{r}
+#| label: fig-m2margins
+#| fig-height: 7.5
+#| fig-width: 6.5
+#| fig-dpi: 300
+#| fig-cap: Average marginal predicted probabilities for an individual's familiarity with products that are associated with PFAS. Horizontal lines indicate the 95% confidence intervals of the marginal predicted probabilities.
+
+
+## marginal effects of m2 controlled from demographics
+marginal_m2 <- tar_read(marginal_m2, store = store)
+
+p1 <- ggplot(marginal_m2) +
+  geom_pointrange(aes(y = y,
+                      x = predicted, 
+                      xmin = conf.low, 
+                      xmax = conf.high, 
+                      color = Q16),
+                  position = position_dodge(0.25),
+                  size = 0.25,
+                  alpha = 0.75) +
+  scale_color_viridis_d("Awareness of\nCommunity PFAS Exposure") +
+  facet_wrap(~model, ncol = 3,
+             labeller = labeller(model = label_wrap_gen(35)),
+             as.table = FALSE,
+             dir = "h") +
+  labs(x = "Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1),
+        legend.direction = "vertical",
+        legend.position = c(0.51,0.91),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9, hjust = 0),
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+p1
+ragg::agg_tiff("figures/fig-2.tiff", width = 6.5, height = 7.5, units = "in", 
+               res = 300, compression = "lzw")
+p1
+dev.off()
+  
+```
+
+
+
+
+```{r}
+#| echo: false
+#| output: false
+marginal_m2_sum <- marginal_m2 |> 
+  group_by(y, Q16) |> 
+  summarise(predicted = mean(predicted))
+
+
+marginal_m3 <- tar_read(marginal_m3, store = store)
+
+marginal_m3_sum <- marginal_m3 |> 
+  group_by(y, Q16) |> 
+  summarise(predicted = mean(predicted))
+
+marginal_m3_sum
+```
+
+
+Awareness of community PFAS exposure also show strong associations with 
+familiarity of potential PFAS sources and intentions to change use of items 
+with potential for PFAS contamination ([@fig-m2margins; @fig-m3margins]). On
+average, `r round(marginal_m2_sum$predicted[[2]],2)*100`% and 
+`r round(marginal_m2_sum$predicted[[2]],3)*100`% of those that were unaware of 
+or not sure if their communties were contaminated by PFAS responded they were
+"not familiar at all" with specific sources of PFAS contamination. This decreased 
+to averages of `r round(marginal_m2_sum$predicted[[14]],2)*100`% and 
+`r round(marginal_m2_sum$predicted[[15]],2)*100`% for the "extremely familiar"
+response. On average, people that stated their communities were contaminated 
+by PFAS had a lower probability (`r round(marginal_m2_sum$predicted[[1]],2)*100`%) 
+of responding that they were "not familiar at all" and higher probability
+(`r round(marginal_m2_sum$predicted[[13]],2)*100`%) of being "extremely 
+familiar" with PFAS sources compared to the other two groups.
+
+People indicating no or unsure of PFAS community contamination were on average
+more likely to say they will never change their use of items 
+(`r round(marginal_m3_sum$predicted[[2]],2)*100`% and 
+`r round(marginal_m3_sum$predicted[[3]],2)*100`%) compared to those aware of
+PFAS contamination in their community 
+(`r round(marginal_m3_sum$predicted[[1]],2)*100`%;
+[@fig-m3margins]). Those aware of community PFAS contamination were also
+more likely on average to have already changed use of items 
+(`r round(marginal_m3_sum$predicted[[13]],2)*100`%) relative to the other two
+groups (`r round(marginal_m3_sum$predicted[[14]],2)*100`% for the "no" group and
+`r round(marginal_m3_sum$predicted[[15]],2)*100`% for the "unsure" group).
+
+```{r}
+#| label: fig-m3margins
+#| fig-height: 7.5
+#| fig-width: 6.5
+#| fig-dpi: 300
+#| fig-cap: Average marginal predicted probabilities for an individual's intention to change use items associated with PFAS contamination. Horizontal lines indicate the 95% confidence intervals of the marginal predicted probabilities.'
+
+
+## marginal effects of m2 controlled from demographics
+marginal_m3 <- tar_read(marginal_m3, store = store)
+
+p1 <- ggplot(marginal_m3) +
+  geom_pointrange(aes(y = y,
+                      x = predicted, 
+                      xmin = conf.low, 
+                      xmax = conf.high, 
+                      color = Q16),
+                  position = position_dodge(0.25),
+                  size = 0.25,
+                  alpha = 0.75) +
+  scale_color_viridis_d("Awareness of\nCommunity PFAS Exposure") +
+  facet_wrap(~model, ncol = 3,
+             labeller = labeller(model = label_wrap_gen(35)),
+             as.table = FALSE,
+             dir = "h") +
+  labs(x = "Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1),
+        legend.direction = "vertical",
+        legend.position = c(0.51,0.91),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9, hjust = 0),
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+p1
+ragg::agg_tiff("figures/fig-3.tiff", width = 6.5, height = 7.5, units = "in", 
+               res = 300, compression = "lzw")
+p1
+dev.off()
+  
+```
+
+## PFAS and Drinking Water
+
+
+There was not strong evidence that age, race, or education are predictive of
+an individual's awareness of PFAS contamination in their drinking water 
+([@tbl-model1]). For individuals identifying as other, the
+odds of responding that they know that their water is contaminated with PFAS was
+100% lower (OR = 0, p < 0.001; [@tbl-model1]) than individuals identifying male. There was 
+strong evidence that awareness of community PFAS exposure 
+was associated with knowledge that drinking water sources were 
+contaminated with PFAS. The odds that an individual aware of community PFAS
+exposure indicated their drinking water was contaminated with PFAS was 100 times
+greater than those that responded they were unaware of community PFAS exposure
+(OR = 0.01, p < 0.001; [@tbl-model1]) and 8.3 times lower than those that were uncertain of
+PFAS exposure (OR = 0.12, p = 0.003; [@tbl-model1]). These strong associations are indicative that 
+awareness of community PFAS contamination may largely be attributed to contamination 
+of drinking water supplies. There was also evidence for associations between
+they types of drinking water sources used by an individual and their awareness
+of their drinking water being contaminated by PFAS. Individuals with unfiltered 
+tap water had 3.57 times the odds of being aware that their drinking water was 
+contaminated than those with filtered tap water (OR = 0.28, p = 0.016; [@tbl-model1]).
+
+
+
+
+```{r}
+#| label: fig-m5margins
+#| fig-height: 3
+#| fig-width: 6.5
+#| fig-dpi: 300
+#| fig-cap: Average marginal predicted probabilities (left) and contrasts in probabilities (right) for concern about PFAS contamination in drinking water based on an individual's awareness of their drinking water being contaminated by PFAS. Horizontal lines indicate the 95% confidence intervals of the marginal predicted probabilities and contrasts in marginal predicted probabilities.
+
+marginal_m5 <- tar_read(marginal_m5, store = store)
+
+p1 <- ggplot(marginal_m5$pred) +
+  geom_pointrange(aes(y = y,
+                      x = predicted,
+                      xmin = conf.low,
+                      xmax = conf.high,
+                      color = Q9_6),
+                  position = position_dodge(0.25),
+                  size = 0.25,
+                  alpha = 0.75) +
+  scale_color_viridis_d(end = 0.5,
+                        guide = guide_legend(
+                          title = "Awareness of Drinking\nWater Contamination",
+                          title.hjust = 1,
+                          label.hjust = 1,
+                          label.position = "left",
+                          reverse = TRUE
+                        )) +
+  labs(x = "Probability", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_text(size = 8, hjust = 1),
+        # legend.background = element_rect(fill = alpha("black", 0.2),
+        #                                  linewidth = 0),
+        # legend.box.just = "right",
+        legend.direction = "vertical",
+        legend.position = c(0.73,0.20),
+        legend.text = element_text(size = 8),
+        # legend.text.align = 1,
+        legend.title = element_text(size = 8),
+        # legend.title.align = 1,
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+
+#p1 <- cowplot::ggdraw(align_legend(p1, hjust = 1))
+
+p2 <- ggplot(marginal_m5$diffs) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  geom_pointrange(aes(y = y,
+                      x = predicted,
+                      xmin = conf.low,
+                      xmax = conf.high),
+                  size = 0.25) +
+  labs(x = "Difference in Probability\n(Yes-No Contrast)", y = "") +
+  theme_TWRI_print(base_family = "Arial") +
+  theme(axis.text.y = element_blank(),
+        # legend.background = element_rect(fill = alpha("black", 0.2),
+        #                                  linewidth = 0),
+        # legend.box.just = "right",
+        legend.direction = "vertical",
+        legend.position = c(0.79,0.20),
+        legend.text = element_text(size = 8),
+        # legend.text.align = 1,
+        legend.title = element_text(size = 8),
+        # legend.title.align = 1,
+        strip.text = element_text(size = 8, face = "plain",
+                                  hjust = 0,
+                                  margin = margin(4.4, 4.4, 4.4, 40)))
+p3 <- cowplot::ggdraw(align_legend(p1 + p2, hjust = 1))
+
+p3
+
+ragg::agg_tiff("figures/fig-4.tiff", width = 6.5, height = 3, units = "in",
+               res = 300, compression = "lzw")
+p3
+dev.off()
+```
+
+```{r}
+#| echo: false
+#| output: false
+
+
+
+marginal_m5_sum <- marginal_m5$diffs |> 
+  mutate(predicted = paste0(
+    sprintf("%.1f", round(predicted*100,1)),
+    "%"))
+
+
+marginal_m5_sum
+```
+
+There was not strong evidence that sex/gender, age, race/ethnicity, or education
+were associated with levels of concern with PFAS contamination in
+drinking water ([@tbl-model1]). There was some evidence of associations between
+source of drinking water and levels of concern about PFAS contamination with
+users of bottled/prepackaged water having 1.44 times the odds of higher levels
+of concern about PFAS contamination in drinking water compared to those that
+use unfiltered tap water (p = 0.025; [@tbl-model1]). There was strong evidence
+of associations between awareness of PFAS contamination in drinking water and 
+concern about PFAS in drinking water. An individual that was aware of PFAS
+contamination in their drinking water had 4.27 times higher odds of reporting a
+higher level of concern about PFAS contamination that someone that was unaware
+of contamination (p = <0.001; [@tbl-model1]).Marginal predicted probabilities 
+show that an individual aware of PFAS 
+contamination in their drinking water had a `r marginal_m5_sum$predicted[[5]]` 
+higher probability of being "extremely concerned" about PFAS contamination and
+`r marginal_m5_sum$predicted[[4]]` higher probability of being "very concerned"
+[@fig-m5margins]. Conversely, individuals that said their drinking water was
+not contaminated by PFAS were more likely to respond that they were
+"not at all concerned", "slightly concerned", or "moderately concerned".
+
+
+
+
+# References

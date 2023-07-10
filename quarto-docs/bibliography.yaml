@@ -1,0 +1,149 @@
+---
+references:
+
+- id: agrestiCategoricalDataAnalysis2002
+  author:
+    - family: Agresti
+      given: Alan
+  call-number: QA278 .A353 2002
+  citation-key: agrestiCategoricalDataAnalysis2002
+  collection-title: Wiley series in probability and statistics
+  edition: 2nd ed
+  event-place: New York
+  ISBN: 978-0-471-36093-3
+  issued:
+    - year: 2002
+  language: en
+  number-of-pages: '710'
+  publisher: Wiley-Interscience
+  publisher-place: New York
+  source: Library of Congress ISBN
+  title: Categorical Data Analysis
+  type: book
+
+- id: debellComputingWeightsAmerican2009
+  author:
+    - family: DeBell
+      given: Matthew
+    - family: Krosnick
+      given: Jon A
+  citation-key: debellComputingWeightsAmerican2009
+  collection-title: ANES Technical Report series
+  event-place: Ann Arbor, MI, and Palo Alto, CA
+  issued:
+    - year: 2009
+  language: en
+  number: nes012427
+  publisher: American National Election Studies
+  publisher-place: Ann Arbor, MI, and Palo Alto, CA
+  source: Zotero
+  title: Computing Weights for American National Election Study Survey Data
+  type: report
+  URL: http://www.electionstudies.org/resources/papers/nes012427.pdf
+
+- id: hanmerCurveClarifyingBest2013
+  author:
+    - family: Hanmer
+      given: Michael J.
+    - family: Ozan Kalkan
+      given: Kerem
+  citation-key: hanmerCurveClarifyingBest2013
+  container-title: American Journal of Political Science
+  DOI: 10.1111/j.1540-5907.2012.00602.x
+  ISSN: '00925853'
+  issue: '1'
+  issued:
+    - year: 2013
+      month: 1
+  language: en
+  page: 263-277
+  source: DOI.org (Crossref)
+  title: >-
+    Behind the curve: clarifying the best approach to calculating predicted
+    probabilities and marginal effects from limited dependent variable models
+  title-short: Behind the Curve
+  type: article-journal
+  volume: '57'
+
+- id: kennedyUsingSexGender2022
+  author:
+    - family: Kennedy
+      given: Lauren
+    - family: Khanna
+      given: Katharine
+    - family: Simpson
+      given: Daniel
+    - family: Gelman
+      given: Andrew
+    - family: Jia
+      given: Yajun
+    - family: Teitler
+      given: Julien
+  citation-key: kennedyUsingSexGender2022
+  issued:
+    - year: 2022
+      month: 3
+      day: 23
+  language: en
+  number: arXiv:2009.14401
+  publisher: arXiv
+  source: arXiv.org
+  title: Using sex and gender in survey adjustment
+  type: article
+  URL: http://arxiv.org/abs/2009.14401
+
+- id: lumleyAnalysisComplexSurvey2004
+  author:
+    - family: Lumley
+      given: Thomas
+  citation-key: lumleyAnalysisComplexSurvey2004
+  container-title: Journal of Statistical Software
+  container-title-short: J. Stat. Soft.
+  DOI: 10.18637/jss.v009.i08
+  ISSN: 1548-7660
+  issue: '8'
+  issued:
+    - year: 2004
+  language: en
+  source: DOI.org (Crossref)
+  title: Analysis of complex survey samples
+  type: article-journal
+  volume: '9'
+
+- id: pasekAnesrakeANESRaking2018
+  author:
+    - family: Pasek
+      given: Josh
+  citation-key: pasekAnesrakeANESRaking2018
+  issued:
+    - year: 2018
+  title: 'anesrake: ANES Raking Implementation'
+  type: software
+  URL: https://CRAN.R-project.org/package=anesrake
+  version: '0.80'
+
+- id: rcoreteamLanguageEnvironmentStatistical2022
+  author:
+    - literal: R Core Team
+  citation-key: rcoreteamLanguageEnvironmentStatistical2022
+  event-place: Vienna, Austria
+  issued:
+    - year: 2022
+  publisher: R Foundation for Statistical Computing
+  publisher-place: Vienna, Austria
+  title: 'R: A Language and Environment for Statistical Computing'
+  type: software
+  URL: https://www.R-project.org/
+
+
+- id: santosSvyEffectsSimulationBasedMarginal2023
+  author:
+    - family: Santos
+      given: John
+  citation-key: santosSvyEffectsSimulationBasedMarginal2023
+  issued:
+    - year: 2023
+  title: 'svyEffects: Simulation-Based Marginal Effects for Survey-Weighted GLMs'
+  type: software
+  URL: https://github.com/jb-santos/svyEffects
+...
