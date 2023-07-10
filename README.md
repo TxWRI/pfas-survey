@@ -157,3 +157,357 @@ targets::tar_read(m2)$m[[1]] |> summary()
     ## Moderately familiar|Very familiar      -0.1139   0.4330    -0.2629
     ## Very familiar|Extremely familiar        0.9026   0.4374     2.0636
     ## (18 observations deleted due to missingness)
+
+``` r
+renv::diagnostics()
+```
+
+    ## Diagnostics Report [renv 1.0.0]
+    ## ===============================
+    ## 
+    ## # Session Info ---------------------------------------------------------------
+    ## R version 4.3.1 (2023-06-16 ucrt)
+    ## Platform: x86_64-w64-mingw32/x64 (64-bit)
+    ## Running under: Windows 11 x64 (build 22621)
+    ## 
+    ## Matrix products: default
+    ## 
+    ## 
+    ## locale:
+    ## [1] LC_COLLATE=English_United States.utf8 
+    ## [2] LC_CTYPE=English_United States.utf8   
+    ## [3] LC_MONETARY=English_United States.utf8
+    ## [4] LC_NUMERIC=C                          
+    ## [5] LC_TIME=English_United States.utf8    
+    ## 
+    ## time zone: America/Chicago
+    ## tzcode source: internal
+    ## 
+    ## attached base packages:
+    ## [1] grid      stats     graphics  grDevices datasets  utils     methods  
+    ## [8] base     
+    ## 
+    ## other attached packages:
+    ## [1] survey_4.2-1   survival_3.5-5 Matrix_1.4-1  
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] base64url_1.4     dplyr_1.1.1       compiler_4.3.1    renv_1.0.0       
+    ##  [5] tidyselect_1.2.0  callr_3.7.3       splines_4.3.1     yaml_2.3.7       
+    ##  [9] fastmap_1.1.1     lattice_0.20-45   R6_2.5.1          generics_0.1.3   
+    ## [13] igraph_1.4.2      knitr_1.42        backports_1.4.1   targets_1.0.0    
+    ## [17] tibble_3.2.1      DBI_1.1.3         pillar_1.9.0      rlang_1.1.0      
+    ## [21] utf8_1.2.3        xfun_0.38         cli_3.6.1         withr_2.5.0      
+    ## [25] magrittr_2.0.3    ps_1.7.4          digest_0.6.31     processx_3.8.0   
+    ## [29] rstudioapi_0.14   lifecycle_1.0.3   vctrs_0.6.1       evaluate_0.20    
+    ## [33] glue_1.6.2        data.table_1.14.8 codetools_0.2-18  mitools_2.4      
+    ## [37] fansi_1.0.4       rmarkdown_2.21    tools_4.3.1       pkgconfig_2.0.3  
+    ## [41] htmltools_0.5.5  
+    ## 
+    ## # Project --------------------------------------------------------------------
+    ## Project path: "C:/Data-Analysis-Projects/pfas-survey"
+    ## 
+    ## # Status ---------------------------------------------------------------------
+    ## No issues found -- the project is in a consistent state.
+    ## 
+    ## # Packages -------------------------------------------------------------------
+    ##                      Library     Source   Lockfile     Source Path Dependency
+    ## DBI                    1.1.3       CRAN      1.1.3       CRAN  [1]   indirect
+    ## Formula                1.2-5       CRAN      1.2-5       CRAN  [1]   indirect
+    ## Hmisc                  5.1-0       CRAN      5.1-0       CRAN  [1]   indirect
+    ## KernSmooth           2.23-20       CRAN    2.23-20       CRAN  [1]   indirect
+    ## MASS                  7.3-60       CRAN     7.3-60       CRAN  [1]   indirect
+    ## Matrix                 1.4-1       CRAN      1.4-1       CRAN  [1]   indirect
+    ## R6                     2.5.1       CRAN      2.5.1       CRAN  [1]   indirect
+    ## RColorBrewer           1.1-3       CRAN      1.1-3       CRAN  [1]   indirect
+    ## Rcpp                  1.0.10       CRAN     1.0.10       CRAN  [1]   indirect
+    ## RcppEigen          0.3.3.9.3       CRAN  0.3.3.9.3       CRAN  [1]   indirect
+    ## V8                     4.3.0       CRAN      4.3.0       CRAN  [1]   indirect
+    ## anesrake                0.80       CRAN       0.80       CRAN  [1]     direct
+    ## askpass                  1.1       CRAN        1.1       CRAN  [1]   indirect
+    ## backports              1.4.1       CRAN      1.4.1       CRAN  [1]   indirect
+    ## base64enc              0.1-3       CRAN      0.1-3       CRAN  [1]   indirect
+    ## base64url                1.4       CRAN        1.4       CRAN  [1]   indirect
+    ## bigD                   0.2.0       CRAN      0.2.0       CRAN  [1]   indirect
+    ## bit                    4.0.5       CRAN      4.0.5       CRAN  [1]   indirect
+    ## bit64                  4.0.5       CRAN      4.0.5       CRAN  [1]   indirect
+    ## bitops                 1.0-7       CRAN      1.0-7       CRAN  [1]   indirect
+    ## blob                   1.2.4       CRAN      1.2.4       CRAN  [1]   indirect
+    ## bookdown                0.33       CRAN       0.33       CRAN  [1]   indirect
+    ## boot                  1.3-28       CRAN     1.3-28       CRAN  [1]   indirect
+    ## brio                   1.1.3       CRAN      1.1.3       CRAN  [1]   indirect
+    ## broom                  1.0.4       CRAN      1.0.4       CRAN  [1]     direct
+    ## broom.helpers         1.13.0       CRAN     1.13.0       CRAN  [1]   indirect
+    ## bslib                  0.4.2       CRAN      0.4.2       CRAN  [1]   indirect
+    ## cachem                 1.0.7       CRAN      1.0.7       CRAN  [1]   indirect
+    ## callr                  3.7.3       CRAN      3.7.3       CRAN  [1]   indirect
+    ## cellranger             1.1.0       CRAN      1.1.0       CRAN  [1]   indirect
+    ## checkmate              2.2.0       CRAN      2.2.0       CRAN  [1]   indirect
+    ## class                 7.3-22       CRAN     7.3-22       CRAN  [2]   indirect
+    ## classInt               0.4-9       CRAN      0.4-9       CRAN  [1]   indirect
+    ## cli                    3.6.1       CRAN      3.6.1       CRAN  [1]   indirect
+    ## clipr                  0.8.0       CRAN      0.8.0       CRAN  [1]   indirect
+    ## cluster                2.1.3       CRAN      2.1.3       CRAN  [1]   indirect
+    ## codetools             0.2-18       CRAN     0.2-18       CRAN  [1]   indirect
+    ## colorspace             2.1-0       CRAN      2.1-0       CRAN  [1]   indirect
+    ## commonmark             1.9.0       CRAN      1.9.0       CRAN  [1]   indirect
+    ## compiler                <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## conflicted             1.2.0       CRAN      1.2.0       CRAN  [1]   indirect
+    ## cowplot                1.1.1       CRAN      1.1.1       CRAN  [1]     direct
+    ## cpp11                  0.4.3       CRAN      0.4.3       CRAN  [1]   indirect
+    ## crayon                 1.5.2       CRAN      1.5.2       CRAN  [1]   indirect
+    ## crul                     1.3       CRAN        1.3       CRAN  [1]   indirect
+    ## curl                   5.0.0       CRAN      5.0.0       CRAN  [1]   indirect
+    ## data.table            1.14.8       CRAN     1.14.8       CRAN  [1]   indirect
+    ## dbplyr                 2.3.2       CRAN      2.3.2       CRAN  [1]   indirect
+    ## desc                   1.4.2       CRAN      1.4.2       CRAN  [1]   indirect
+    ## diffobj                0.3.5       CRAN      0.3.5       CRAN  [1]   indirect
+    ## digest                0.6.31       CRAN     0.6.31       CRAN  [1]   indirect
+    ## dplyr                  1.1.1       CRAN      1.1.1       CRAN  [1]     direct
+    ## dtplyr                 1.3.1       CRAN      1.3.1       CRAN  [1]   indirect
+    ## e1071                 1.7-13       CRAN     1.7-13       CRAN  [1]   indirect
+    ## ellipsis               0.3.2       CRAN      0.3.2       CRAN  [1]   indirect
+    ## evaluate                0.20       CRAN       0.20       CRAN  [1]   indirect
+    ## fansi                  1.0.4       CRAN      1.0.4       CRAN  [1]   indirect
+    ## farver                 2.1.1       CRAN      2.1.1       CRAN  [1]   indirect
+    ## fastmap                1.1.1       CRAN      1.1.1       CRAN  [1]   indirect
+    ## flextable              0.9.1       CRAN      0.9.1       CRAN  [1]     direct
+    ## fontBitstreamVera      0.1.1       CRAN      0.1.1       CRAN  [1]   indirect
+    ## fontLiberation         0.1.0       CRAN      0.1.0       CRAN  [1]   indirect
+    ## fontawesome            0.5.0       CRAN      0.5.0       CRAN  [1]   indirect
+    ## fontquiver             0.2.1       CRAN      0.2.1       CRAN  [1]   indirect
+    ## forcats                1.0.0       CRAN      1.0.0       CRAN  [1]     direct
+    ## foreign               0.8-82       CRAN     0.8-82       CRAN  [1]   indirect
+    ## fs                     1.6.1       CRAN      1.6.1       CRAN  [1]   indirect
+    ## furrr                  0.3.1       CRAN      0.3.1       CRAN  [1]   indirect
+    ## future                1.32.0       CRAN     1.32.0       CRAN  [1]   indirect
+    ## future.callr           0.8.1       CRAN      0.8.1       CRAN  [1]   indirect
+    ## gargle                 1.3.0       CRAN      1.3.0       CRAN  [1]   indirect
+    ## gdata                 2.19.0       CRAN     2.19.0       CRAN  [1]   indirect
+    ## gdtools                0.3.3       CRAN      0.3.3       CRAN  [1]   indirect
+    ## generics               0.1.3       CRAN      0.1.3       CRAN  [1]   indirect
+    ## gfonts                 0.2.0       CRAN      0.2.0       CRAN  [1]   indirect
+    ## ggplot2                3.4.2       CRAN      3.4.2       CRAN  [1]   indirect
+    ## globals               0.16.2       CRAN     0.16.2       CRAN  [1]   indirect
+    ## glue                   1.6.2       CRAN      1.6.2       CRAN  [1]   indirect
+    ## googledrive            2.1.0       CRAN      2.1.0       CRAN  [1]   indirect
+    ## googlesheets4          1.1.0       CRAN      1.1.0       CRAN  [1]   indirect
+    ## grDevices               <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## graphics                <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## grid                    <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## gridExtra                2.3       CRAN        2.3       CRAN  [1]   indirect
+    ## gt                     0.9.0       CRAN      0.9.0       CRAN  [1]   indirect
+    ## gtable                 0.3.3       CRAN      0.3.3       CRAN  [1]     direct
+    ## gtools                 3.9.4       CRAN      3.9.4       CRAN  [1]   indirect
+    ## gtsummary              1.7.1       CRAN      1.7.1       CRAN  [1]     direct
+    ## haven                  2.5.2       CRAN      2.5.2       CRAN  [1]   indirect
+    ## highr                   0.10       CRAN       0.10       CRAN  [1]   indirect
+    ## hms                    1.1.3       CRAN      1.1.3       CRAN  [1]   indirect
+    ## htmlTable              2.4.1       CRAN      2.4.1       CRAN  [1]   indirect
+    ## htmltools              0.5.5       CRAN      0.5.5       CRAN  [1]   indirect
+    ## htmlwidgets            1.6.2       CRAN      1.6.2       CRAN  [1]   indirect
+    ## httpcode               0.3.0       CRAN      0.3.0       CRAN  [1]   indirect
+    ## httpuv                 1.6.9       CRAN      1.6.9       CRAN  [1]   indirect
+    ## httr                   1.4.5       CRAN      1.4.5       CRAN  [1]   indirect
+    ## ids                    1.0.1       CRAN      1.0.1       CRAN  [1]   indirect
+    ## igraph                 1.4.2       CRAN      1.4.2       CRAN  [1]   indirect
+    ## isoband                0.2.7       CRAN      0.2.7       CRAN  [1]   indirect
+    ## janitor                2.2.0       CRAN      2.2.0       CRAN  [1]     direct
+    ## jquerylib              0.1.4       CRAN      0.1.4       CRAN  [1]   indirect
+    ## jsonlite               1.8.4       CRAN      1.8.4       CRAN  [1]   indirect
+    ## juicyjuice             0.1.0       CRAN      0.1.0       CRAN  [1]   indirect
+    ## kableExtra             1.3.4       CRAN      1.3.4       CRAN  [1]     direct
+    ## knitr                   1.42       CRAN       1.42       CRAN  [1]     direct
+    ## labeling               0.4.2       CRAN      0.4.2       CRAN  [1]   indirect
+    ## labelled              2.11.0       CRAN     2.11.0       CRAN  [1]   indirect
+    ## later                  1.3.0       CRAN      1.3.0       CRAN  [1]   indirect
+    ## lattice              0.20-45       CRAN    0.20-45       CRAN  [1]   indirect
+    ## lifecycle              1.0.3       CRAN      1.0.3       CRAN  [1]   indirect
+    ## listenv                0.9.0       CRAN      0.9.0       CRAN  [1]   indirect
+    ## lme4                  1.1-33       CRAN     1.1-33       CRAN  [1]   indirect
+    ## lubridate              1.9.2       CRAN      1.9.2       CRAN  [1]   indirect
+    ## magrittr               2.0.3       CRAN      2.0.3       CRAN  [1]   indirect
+    ## markdown                 1.6       CRAN        1.6       CRAN  [1]   indirect
+    ## memoise                2.0.1       CRAN      2.0.1       CRAN  [1]   indirect
+    ## methods                 <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## mgcv                  1.8-40       CRAN     1.8-40       CRAN  [1]   indirect
+    ## mice                  3.15.0       CRAN     3.15.0       CRAN  [1]     direct
+    ## mime                    0.12       CRAN       0.12       CRAN  [1]   indirect
+    ## minqa                  1.2.5       CRAN      1.2.5       CRAN  [1]   indirect
+    ## mitools                  2.4       CRAN        2.4       CRAN  [1]   indirect
+    ## modelr                0.1.11       CRAN     0.1.11       CRAN  [1]   indirect
+    ## munsell                0.5.0       CRAN      0.5.0       CRAN  [1]   indirect
+    ## nlme                 3.1-157       CRAN    3.1-157       CRAN  [1]   indirect
+    ## nloptr                 2.0.3       CRAN      2.0.3       CRAN  [1]   indirect
+    ## nnet                  7.3-19       CRAN     7.3-19       CRAN  [2]   indirect
+    ## numDeriv          2016.8-1.1       CRAN 2016.8-1.1       CRAN  [1]   indirect
+    ## officedown             0.3.0       CRAN      0.3.0       CRAN  [1]     direct
+    ## officer                0.6.2       CRAN      0.6.2       CRAN  [1]     direct
+    ## openssl                2.0.6       CRAN      2.0.6       CRAN  [1]   indirect
+    ## packrat                0.9.1       CRAN      0.9.1       CRAN  [1]   indirect
+    ## parallel                <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## parallelly            1.35.0       CRAN     1.35.0       CRAN  [1]   indirect
+    ## patchwork              1.1.2       CRAN      1.1.2       CRAN  [1]     direct
+    ## pillar                 1.9.0       CRAN      1.9.0       CRAN  [1]   indirect
+    ## pkgconfig              2.0.3       CRAN      2.0.3       CRAN  [1]   indirect
+    ## pkgload                1.3.2       CRAN      1.3.2       CRAN  [1]   indirect
+    ## praise                 1.0.0       CRAN      1.0.0       CRAN  [1]   indirect
+    ## prettyunits            1.1.1       CRAN      1.1.1       CRAN  [1]   indirect
+    ## processx               3.8.0       CRAN      3.8.0       CRAN  [1]   indirect
+    ## progress               1.2.2       CRAN      1.2.2       CRAN  [1]   indirect
+    ## promises             1.2.0.1       CRAN    1.2.0.1       CRAN  [1]   indirect
+    ## proxy                 0.4-27       CRAN     0.4-27       CRAN  [1]   indirect
+    ## ps                     1.7.4       CRAN      1.7.4       CRAN  [1]   indirect
+    ## purrr                  1.0.1       CRAN      1.0.1       CRAN  [1]   indirect
+    ## quarto                   1.2       CRAN        1.2       CRAN  [1]     direct
+    ## ragg                   1.2.5       CRAN      1.2.5       CRAN  [1]     direct
+    ## ranger                0.15.1       CRAN     0.15.1       CRAN  [1]     direct
+    ## rappdirs               0.3.3       CRAN      0.3.3       CRAN  [1]   indirect
+    ## reactR                 0.4.4       CRAN      0.4.4       CRAN  [1]   indirect
+    ## reactable              0.4.4       CRAN      0.4.4       CRAN  [1]   indirect
+    ## readr                  2.1.4       CRAN      2.1.4       CRAN  [1]   indirect
+    ## readxl                 1.4.2       CRAN      1.4.2       CRAN  [1]   indirect
+    ## rematch                1.0.1       CRAN      1.0.1       CRAN  [1]   indirect
+    ## rematch2               2.1.2       CRAN      2.1.2       CRAN  [1]   indirect
+    ## renv                   1.0.0       CRAN      1.0.0       CRAN  [1]     direct
+    ## reprex                 2.0.2       CRAN      2.0.2       CRAN  [1]   indirect
+    ## rlang                  1.1.0       CRAN      1.1.0       CRAN  [1]   indirect
+    ## rmarkdown               2.21       CRAN       2.21       CRAN  [1]     direct
+    ## rpart                 4.1.16       CRAN     4.1.16       CRAN  [1]   indirect
+    ## rprojroot              2.0.3       CRAN      2.0.3       CRAN  [1]   indirect
+    ## rsconnect             0.8.29       CRAN     0.8.29       CRAN  [1]   indirect
+    ## rstudioapi              0.14       CRAN       0.14       CRAN  [1]   indirect
+    ## rvest                  1.0.3       CRAN      1.0.3       CRAN  [1]   indirect
+    ## rvg                    0.3.2       CRAN      0.3.2       CRAN  [1]   indirect
+    ## s2                     1.1.3       CRAN      1.1.3       CRAN  [1]   indirect
+    ## sass                   0.4.5       CRAN      0.4.5       CRAN  [1]   indirect
+    ## scales                 1.2.1       CRAN      1.2.1       CRAN  [1]   indirect
+    ## selectr                0.4-2       CRAN      0.4-2       CRAN  [1]   indirect
+    ## sessioninfo            1.2.2       CRAN       <NA>       <NA>  [1]       <NA>
+    ## sf                    1.0-13       CRAN     1.0-13       CRAN  [1]   indirect
+    ## shiny                  1.7.4       CRAN      1.7.4       CRAN  [1]   indirect
+    ## snakecase             0.11.0       CRAN     0.11.0       CRAN  [1]   indirect
+    ## sourcetools          0.1.7-1       CRAN    0.1.7-1       CRAN  [1]   indirect
+    ## spatial               7.3-16       CRAN       <NA>       <NA>  [2]       <NA>
+    ## splines                 <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## srvyr                  1.2.0       CRAN      1.2.0       CRAN  [1]     direct
+    ## stats                   <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## stringi               1.7.12       CRAN     1.7.12       CRAN  [1]   indirect
+    ## stringr                1.5.0       CRAN      1.5.0       CRAN  [1]   indirect
+    ## survey                 4.2-1       CRAN      4.2-1       CRAN  [1]     direct
+    ## survival               3.5-5       CRAN      3.5-5       CRAN  [2]   indirect
+    ## svglite                2.1.1       CRAN      2.1.1       CRAN  [1]   indirect
+    ## svyEffects        0.0.0.9000     GitHub 0.0.0.9000     GitHub  [1]     direct
+    ## sys                    3.4.1       CRAN      3.4.1       CRAN  [1]   indirect
+    ## systemfonts            1.0.4       CRAN      1.0.4       CRAN  [1]   indirect
+    ## tarchetypes            0.7.6       CRAN      0.7.6       CRAN  [1]     direct
+    ## targets                1.0.0       CRAN      1.0.0       CRAN  [1]     direct
+    ## testthat               3.1.8       CRAN      3.1.8       CRAN  [1]   indirect
+    ## textshaping            0.3.6       CRAN      0.3.6       CRAN  [1]   indirect
+    ## tibble                 3.2.1       CRAN      3.2.1       CRAN  [1]   indirect
+    ## tidycensus             1.3.2       CRAN      1.3.2       CRAN  [1]     direct
+    ## tidyr                  1.3.0       CRAN      1.3.0       CRAN  [1]   indirect
+    ## tidyselect             1.2.0       CRAN      1.2.0       CRAN  [1]   indirect
+    ## tidyverse              2.0.0       CRAN      2.0.0       CRAN  [1]     direct
+    ## tigris                 2.0.1       CRAN      2.0.1       CRAN  [1]   indirect
+    ## timechange             0.2.0       CRAN      0.2.0       CRAN  [1]   indirect
+    ## tinytex                 0.44       CRAN       0.44       CRAN  [1]   indirect
+    ## tools                   <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## triebeard              0.4.1       CRAN      0.4.1       CRAN  [1]   indirect
+    ## twriTemplates          0.2.3 Repository      0.2.3 Repository  [1]     direct
+    ## tzdb                   0.3.0       CRAN      0.3.0       CRAN  [1]   indirect
+    ## units                  0.8-2       CRAN      0.8-2       CRAN  [1]   indirect
+    ## urltools               1.7.3       CRAN      1.7.3       CRAN  [1]   indirect
+    ## utf8                   1.2.3       CRAN      1.2.3       CRAN  [1]   indirect
+    ## utils                   <NA>       <NA>       <NA>       <NA>  [2]   indirect
+    ## uuid                   1.1-0       CRAN      1.1-0       CRAN  [1]   indirect
+    ## vctrs                  0.6.1       CRAN      0.6.1       CRAN  [1]   indirect
+    ## viridis                0.6.3       CRAN      0.6.3       CRAN  [1]   indirect
+    ## viridisLite            0.4.1       CRAN      0.4.1       CRAN  [1]   indirect
+    ## visNetwork             2.1.2       CRAN      2.1.2       CRAN  [1]     direct
+    ## vroom                  1.6.1       CRAN      1.6.1       CRAN  [1]   indirect
+    ## waldo                  0.5.1       CRAN      0.5.1       CRAN  [1]   indirect
+    ## webshot                0.5.5       CRAN      0.5.5       CRAN  [1]   indirect
+    ## weights                1.0.4       CRAN      1.0.4       CRAN  [1]   indirect
+    ## withr                  2.5.0       CRAN      2.5.0       CRAN  [1]   indirect
+    ## wk                     0.7.3       CRAN      0.7.3       CRAN  [1]   indirect
+    ## xfun                    0.38       CRAN       0.38       CRAN  [1]   indirect
+    ## xml2                   1.3.3       CRAN      1.3.3       CRAN  [1]   indirect
+    ## xtable                 1.8-4       CRAN      1.8-4       CRAN  [1]   indirect
+    ## yaml                   2.3.7       CRAN      2.3.7       CRAN  [1]   indirect
+    ## zip                    2.2.2       CRAN      2.2.2       CRAN  [1]   indirect
+    ## 
+    ## [1]: C:/Data-Analysis-Projects/pfas-survey/renv/library/R-4.3/x86_64-w64-mingw32                    
+    ## [2]: C:/Users/michael.schramm/AppData/Local/R/cache/R/renv/sandbox/R-4.3/x86_64-w64-mingw32/f8897b8d
+    ## 
+    ## # ABI ------------------------------------------------------------------------
+    ## - ABI conflict checks are not yet implemented on Windows.
+    ## 
+    ## # User Profile ---------------------------------------------------------------
+    ## [no user profile detected]
+    ## 
+    ## # Settings -------------------------------------------------------------------
+    ## List of 13
+    ##  $ bioconductor.version     : NULL
+    ##  $ external.libraries       : chr(0) 
+    ##  $ ignored.packages         : chr(0) 
+    ##  $ package.dependency.fields: chr [1:3] "Imports" "Depends" "LinkingTo"
+    ##  $ ppm.enabled              : NULL
+    ##  $ ppm.ignored.urls         : NULL
+    ##  $ r.version                : NULL
+    ##  $ snapshot.type            : chr "implicit"
+    ##  $ use.cache                : logi TRUE
+    ##  $ vcs.ignore.cellar        : logi TRUE
+    ##  $ vcs.ignore.library       : logi TRUE
+    ##  $ vcs.ignore.local         : logi TRUE
+    ##  $ vcs.manage.ignores       : logi TRUE
+    ## 
+    ## # Options --------------------------------------------------------------------
+    ## List of 8
+    ##  $ defaultPackages                     : chr [1:6] "datasets" "utils" "grDevices" "graphics" ...
+    ##  $ download.file.method                : NULL
+    ##  $ download.file.extra                 : NULL
+    ##  $ install.packages.compile.from.source: chr "interactive"
+    ##  $ pkgType                             : chr "both"
+    ##  $ repos                               : Named chr "https://cran.rstudio.com"
+    ##   ..- attr(*, "names")= chr "CRAN"
+    ##  $ renv.consent                        : logi TRUE
+    ##  $ renv.verbose                        : logi TRUE
+    ## 
+    ## # Environment Variables ------------------------------------------------------
+    ## HOME                        = C:/Users/michael.schramm/Documents
+    ## LANG                        = <NA>
+    ## MAKE                        = <NA>
+    ## R_LIBS                      = C:/Data-Analysis-Projects/pfas-survey/renv/library/R-4.3/x86_64-w64-mingw32;C:/Users/michael.schramm/AppData/Local/R/cache/R/renv/sandbox/R-4.3/x86_64-w64-mingw32/f8897b8d
+    ## R_LIBS_SITE                 = C:/Users/michael.schramm/AppData/Local/Programs/R/R-4.3.1/site-library
+    ## R_LIBS_USER                 = C:/Data-Analysis-Projects/pfas-survey/renv/library/R-4.3/x86_64-w64-mingw32;C:/Users/michael.schramm/AppData/Local/R/cache/R/renv/sandbox/R-4.3/x86_64-w64-mingw32/f8897b8d
+    ## RENV_DEFAULT_R_ENVIRON      = <NA>
+    ## RENV_DEFAULT_R_ENVIRON_USER = <NA>
+    ## RENV_DEFAULT_R_LIBS         = <NA>
+    ## RENV_DEFAULT_R_LIBS_SITE    = C:/Users/michael.schramm/AppData/Local/Programs/R/R-4.3.1/site-library
+    ## RENV_DEFAULT_R_LIBS_USER    = C:\Users\michael.schramm\AppData\Local/R/win-library/4.3
+    ## RENV_DEFAULT_R_PROFILE      = <NA>
+    ## RENV_DEFAULT_R_PROFILE_USER = <NA>
+    ## RENV_PROJECT                = C:/Data-Analysis-Projects/pfas-survey
+    ## 
+    ## # PATH -----------------------------------------------------------------------
+    ## - C:\rtools43/x86_64-w64-mingw32.static.posix/bin
+    ## - C:\rtools43/usr/bin
+    ## - C:\rtools43\x86_64-w64-mingw32.static.posix\bin
+    ## - C:\rtools43\usr\bin
+    ## - C:\Users\michael.schramm\AppData\Local\Programs\R\R-4.3.1\bin\x64
+    ## - C:\Windows\system32
+    ## - C:\Windows
+    ## - C:\Windows\System32\Wbem
+    ## - C:\Windows\System32\WindowsPowerShell\v1.0\
+    ## - C:\Windows\System32\OpenSSH\
+    ## - C:\Program Files\dotnet\
+    ## - C:\Users\michael.schramm\AppData\Local\Microsoft\WindowsApps
+    ## - C:\Users\michael.schramm\AppData\Local\Programs\Git\cmd
+    ## - C:\Program Files\RStudio\resources\app\bin\quarto\bin
+    ## - C:\Program Files\RStudio\resources\app\bin\postback
+    ## - C:\Program Files\RStudio\resources\app\bin\rpostback.exe
+    ## - C:\Program Files\RStudio\resources\app\bin\postback.exe
+    ## 
+    ## # Cache ----------------------------------------------------------------------
+    ## There are a total of 245 packages installed in the renv cache.
+    ## Cache path: "C:/Users/michael.schramm/AppData/Local/R/cache/R/renv/cache/v5/R-4.3/x86_64-w64-mingw32"

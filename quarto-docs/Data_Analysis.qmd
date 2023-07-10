@@ -25,6 +25,7 @@ csl: https://www.zotero.org/styles/council-of-science-editors-author-date?source
 #| warning: false
 
 
+
 knitr::opts_chunk$set(echo = FALSE,
                       dev = "ragg_png",
                       dpi = 300)
@@ -606,9 +607,14 @@ p2 <- marginal_m1$diffs |>
   )
 
 
-cowplot::plot_grid(align_legend(p1, hjust = 1),
+p3 <- cowplot::plot_grid(align_legend(p1, hjust = 1),
                    p2,
                    rel_widths = c(1.65, 1))
+p3
+ragg::agg_tiff("figures/fig-1.tiff", width = 6.5, height = 3, units = "in", 
+               res = 300, compression = "lzw")
+p3
+dev.off()
 ```
 
 ```{r}
@@ -653,7 +659,7 @@ likley to have never heard of it, and if they have they don't know what it is.
 ## marginal effects of m2 controlled from demographics
 marginal_m2 <- tar_read(marginal_m2, store = store)
 
-ggplot(marginal_m2) +
+p1 <- ggplot(marginal_m2) +
   geom_pointrange(aes(y = y,
                       x = predicted, 
                       xmin = conf.low, 
@@ -677,8 +683,11 @@ ggplot(marginal_m2) +
         strip.text = element_text(size = 8, face = "plain",
                                   hjust = 0,
                                   margin = margin(4.4, 4.4, 4.4, 40)))
-
-
+p1
+ragg::agg_tiff("figures/fig-2.tiff", width = 6.5, height = 7.5, units = "in", 
+               res = 300, compression = "lzw")
+p1
+dev.off()
   
 ```
 
@@ -741,7 +750,7 @@ groups (`r round(marginal_m3_sum$predicted[[14]],2)*100`% for the "no" group and
 ## marginal effects of m2 controlled from demographics
 marginal_m3 <- tar_read(marginal_m3, store = store)
 
-ggplot(marginal_m3) +
+p1 <- ggplot(marginal_m3) +
   geom_pointrange(aes(y = y,
                       x = predicted, 
                       xmin = conf.low, 
@@ -765,8 +774,11 @@ ggplot(marginal_m3) +
         strip.text = element_text(size = 8, face = "plain",
                                   hjust = 0,
                                   margin = margin(4.4, 4.4, 4.4, 40)))
-
-
+p1
+ragg::agg_tiff("figures/fig-3.tiff", width = 6.5, height = 7.5, units = "in", 
+               res = 300, compression = "lzw")
+p1
+dev.off()
   
 ```
 
@@ -861,8 +873,14 @@ p2 <- ggplot(marginal_m5$diffs) +
         strip.text = element_text(size = 8, face = "plain",
                                   hjust = 0,
                                   margin = margin(4.4, 4.4, 4.4, 40)))
-cowplot::ggdraw(align_legend(p1 + p2, hjust = 1))
+p3 <- cowplot::ggdraw(align_legend(p1 + p2, hjust = 1))
 
+p3
+
+ragg::agg_tiff("figures/fig-4.tiff", width = 6.5, height = 3, units = "in",
+               res = 300, compression = "lzw")
+p3
+dev.off()
 ```
 
 ```{r}
