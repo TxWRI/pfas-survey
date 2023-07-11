@@ -1,0 +1,18 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Berthold
+    given-names: Allen
+  - family-names: McCrary
+    given-names: Audrey
+    orcid: https://orcid.org/0000-0002-7061-6113
+  - family-names: deVilleneuve
+    given-names: Stephanie
+    orcid: https://orcid.org/0009-0002-3984-035X
+  - family-names: Schramm
+    given-names: Michael
+    orcid: https://orcid.org/0000-0003-1876-6592
+title: TWRI PFAS Survey Data and Analysis Code: v1.0
+version: v1.0
+doi: 10.5281/zenodo.8132988
+date-released: 2023-07-10
