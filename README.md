@@ -2,6 +2,8 @@ TWRI PFAS Survey Data and Analysis Code
 ================
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8132988.svg)](https://doi.org/10.5281/zenodo.8132988)
+[![License: CC BY
+4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 This is the data and code repository for the PFAS Public Survey study.
 
@@ -257,6 +259,7 @@ renv::diagnostics()
     ## cowplot                1.1.1       CRAN      1.1.1       CRAN  [1]     direct
     ## cpp11                  0.4.3       CRAN      0.4.3       CRAN  [1]   indirect
     ## crayon                 1.5.2       CRAN      1.5.2       CRAN  [1]   indirect
+    ## credentials            1.3.2       CRAN       <NA>       <NA>  [1]       <NA>
     ## crul                     1.3       CRAN        1.3       CRAN  [1]   indirect
     ## curl                   5.0.0       CRAN      5.0.0       CRAN  [1]   indirect
     ## data.table            1.14.8       CRAN     1.14.8       CRAN  [1]   indirect
@@ -287,8 +290,11 @@ renv::diagnostics()
     ## gdata                 2.19.0       CRAN     2.19.0       CRAN  [1]   indirect
     ## gdtools                0.3.3       CRAN      0.3.3       CRAN  [1]   indirect
     ## generics               0.1.3       CRAN      0.1.3       CRAN  [1]   indirect
+    ## gert                   1.9.2       CRAN       <NA>       <NA>  [1]       <NA>
     ## gfonts                 0.2.0       CRAN      0.2.0       CRAN  [1]   indirect
     ## ggplot2                3.4.2       CRAN      3.4.2       CRAN  [1]   indirect
+    ## gh                     1.4.0       CRAN       <NA>       <NA>  [1]       <NA>
+    ## gitcreds               0.1.2       CRAN       <NA>       <NA>  [1]       <NA>
     ## globals               0.16.2       CRAN     0.16.2       CRAN  [1]   indirect
     ## glue                   1.6.2       CRAN      1.6.2       CRAN  [1]   indirect
     ## googledrive            2.1.0       CRAN      2.1.0       CRAN  [1]   indirect
@@ -310,8 +316,10 @@ renv::diagnostics()
     ## httpcode               0.3.0       CRAN      0.3.0       CRAN  [1]   indirect
     ## httpuv                 1.6.9       CRAN      1.6.9       CRAN  [1]   indirect
     ## httr                   1.4.5       CRAN      1.4.5       CRAN  [1]   indirect
+    ## httr2                  0.2.3       CRAN       <NA>       <NA>  [1]       <NA>
     ## ids                    1.0.1       CRAN      1.0.1       CRAN  [1]   indirect
     ## igraph                 1.4.2       CRAN      1.4.2       CRAN  [1]   indirect
+    ## ini                    0.3.1       CRAN       <NA>       <NA>  [1]       <NA>
     ## isoband                0.2.7       CRAN      0.2.7       CRAN  [1]   indirect
     ## janitor                2.2.0       CRAN      2.2.0       CRAN  [1]     direct
     ## jquerylib              0.1.4       CRAN      0.1.4       CRAN  [1]   indirect
@@ -419,6 +427,7 @@ renv::diagnostics()
     ## tzdb                   0.3.0       CRAN      0.3.0       CRAN  [1]   indirect
     ## units                  0.8-2       CRAN      0.8-2       CRAN  [1]   indirect
     ## urltools               1.7.3       CRAN      1.7.3       CRAN  [1]   indirect
+    ## usethis                2.2.2       CRAN       <NA>       <NA>  [1]       <NA>
     ## utf8                   1.2.3       CRAN      1.2.3       CRAN  [1]   indirect
     ## utils                   <NA>       <NA>       <NA>       <NA>  [2]   indirect
     ## uuid                   1.1-0       CRAN      1.1-0       CRAN  [1]   indirect
@@ -430,6 +439,7 @@ renv::diagnostics()
     ## waldo                  0.5.1       CRAN      0.5.1       CRAN  [1]   indirect
     ## webshot                0.5.5       CRAN      0.5.5       CRAN  [1]   indirect
     ## weights                1.0.4       CRAN      1.0.4       CRAN  [1]   indirect
+    ## whisker                0.4.1       CRAN       <NA>       <NA>  [1]       <NA>
     ## withr                  2.5.0       CRAN      2.5.0       CRAN  [1]   indirect
     ## wk                     0.7.3       CRAN      0.7.3       CRAN  [1]   indirect
     ## xfun                    0.38       CRAN       0.38       CRAN  [1]   indirect
@@ -509,5 +519,5 @@ renv::diagnostics()
     ## - C:\Program Files\RStudio\resources\app\bin\postback
     ## 
     ## # Cache ----------------------------------------------------------------------
-    ## There are a total of 245 packages installed in the renv cache.
+    ## There are a total of 253 packages installed in the renv cache.
     ## Cache path: "C:/Users/michael.schramm/AppData/Local/R/cache/R/renv/cache/v5/R-4.3/x86_64-w64-mingw32"
