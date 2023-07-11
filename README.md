@@ -1,9 +1,11 @@
-PFAS Public Survey
+TWRI PFAS Survey Data and Analysis Code
 ================
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8132988.svg)](https://doi.org/10.5281/zenodo.8132988)
 
 This is the data and code repository for the PFAS Public Survey study.
 
-Berthold, A., McCrary A., deVilleneuve, S., Schramm, M. Pending.
+Berthold, A., McCrary A., deVilleneuve, S., Schramm, M. In Submission.
 
 This project uses the [renv](https://rstudio.github.io/renv/) and
 [targets](https://docs.ropensci.org/targets/) R packages to facilitate
@@ -505,8 +507,6 @@ renv::diagnostics()
     ## - C:\Users\michael.schramm\AppData\Local\Programs\Git\cmd
     ## - C:\Program Files\RStudio\resources\app\bin\quarto\bin
     ## - C:\Program Files\RStudio\resources\app\bin\postback
-    ## - C:\Program Files\RStudio\resources\app\bin\rpostback.exe
-    ## - C:\Program Files\RStudio\resources\app\bin\postback.exe
     ## 
     ## # Cache ----------------------------------------------------------------------
     ## There are a total of 245 packages installed in the renv cache.
